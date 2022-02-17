@@ -1,0 +1,87 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 45px 50px 0;
+}
+
+.logoContainer {
+  flex: 1 1 auto;
+}
+
+.logo {
+  display: block;
+  width: 82px;
+  height: 58px;
+  background-size: contain;
+  background-position: center;
+  background-image: url("/logo.svg");
+  background-repeat: no-repeat;
+}
+
+.summary {
+  display: flex;
+  margin: 0 -10px;
+  flex: 1 1 auto;
+  justify-content: space-around;
+}
+
+.summaryEl {
+  margin: 0 10px;
+}
+
+.summaryElTitle {
+  line-height: 20px;
+  font-size: 12px;
+  color: #b57800;
+}
+
+.summaryElValue {
+  line-height: 36px;
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.walletContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.wallet {
+  display: block;
+  margin-left: 10px;
+  background-image: url("../images/button-background.svg");
+  background-color: transparent;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  color: #ff9900;
+  padding: 41px 45px 27px;
+  cursor: pointer;
+  line-height: 20px;
+  font-size: 12px;
+}
+
+.main {
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 50px 30px;
+}
