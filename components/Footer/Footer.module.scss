@@ -1,0 +1,73 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 50px 30px;
+}
+
+.music {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.musicWave {
+  width: 24px;
+  height: 24px;
+  color: #ff9900;
+  margin-right: 6px;
+}
+
+.scroll {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.scrollIcon {
+  display: block;
+  width: 31px;
+  margin: 4px auto 0;
+  color: #ff9900;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.socialLinks {
+  display: flex;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  color: #ffffff;
+}
+
+.socialIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.policyLinks {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.policyLink {
+  display: block;
+  padding: 8px 10px;
+}
