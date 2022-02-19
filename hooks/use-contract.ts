@@ -1,14 +1,19 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
-import { formatUnits } from '@ethersproject/units';
-import { Provider } from '../connectors/core/types';
 import { abi } from '../contracts/QD.json';
+import { useWallet } from './use-wallet';
 
-export const useContract = (provider: Provider | null) => {
-    return useMemo(() => provider ? new Contract(
-        '0x91dE90CA97b5410A5635F6713bD497493968e748',
-        abi,
-        new Web3Provider(provider)
-    ) : null, [provider]);
-}
+export const useContract = () => {
+  const { provider } = useWallet();
+  return useMemo(
+    () =>
+      provider
+        ? new Contract(
+          process.env.NEXT_PUBLIC_CONTRACT_ID!,
+          abi,
+          new Web3Provider(provider),
+        ) : null,
+    [provider],
+  );
+};

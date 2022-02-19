@@ -1,9 +1,11 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useContract } from '../../hooks/use-contract';
 import { Icon } from '../Lib/Icon';
 import styles from './Mint.module.scss';
 
 const Mint: React.VFC = () => {
-  const [value, setValue] = useState('');
+  const [mintValue, setMintValue] = useState('');
+  const contract = useContract();
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
@@ -22,12 +24,17 @@ const Mint: React.VFC = () => {
     }
 
     if (regex.test(originalValue)) {
-      setValue(originalValue);
+      setMintValue(originalValue);
     }
   };
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // contract?.mint(mintValue, 0);
+  };
+
   return (
-    <form className={styles.root}>
+    <form className={styles.root} onSubmit={handleSubmit}>
       <div>
         <div className={styles.availability}>
           <span className={styles.availabilityTitle}>Available today</span>
@@ -43,7 +50,7 @@ const Mint: React.VFC = () => {
             type="text"
             id="mint-input"
             className={styles.input}
-            value={value}
+            value={mintValue}
             onChange={handleChangeValue}
             placeholder="Deposit amount"
           />
