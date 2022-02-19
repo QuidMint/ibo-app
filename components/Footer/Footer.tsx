@@ -12,7 +12,7 @@ const Footer: React.VFC = () => {
       </div>
       <div className={styles.scrollContainer}>
         <button className={styles.scroll}>
-          Scroll
+          See more
           <Icon name="arrow-down" className={styles.scrollIcon} />
         </button>
       </div>
