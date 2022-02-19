@@ -7,6 +7,16 @@
   padding: 0 0 30px;
 }
 
+.musicContainer {
+  flex: 1 1 20%;
+}
+
+.scrollContainer {
+  flex: 10 1 auto;
+  display: flex;
+  justify-content: center;
+}
+
 .music {
   display: flex;
   align-items: center;
@@ -15,6 +25,7 @@
   border: none;
   cursor: pointer;
   font-family: variables.$primary-font;
+  padding: 0;
 }
 
 .musicWave {
@@ -33,6 +44,7 @@
   text-align: center;
   cursor: pointer;
   font-family: variables.$primary-font;
+  padding: 0 20px;
 }
 
 .scrollIcon {
@@ -46,6 +58,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  flex: 1 1 20%;
 }
 
 .socialLinks {
@@ -64,14 +77,4 @@
 .socialIcon {
   width: 18px;
   height: 18px;
-}
-
-.policyLinks {
-  display: flex;
-  flex-wrap: nowrap;
-}
-
-.policyLink {
-  display: block;
-  padding: 8px 10px;
 }

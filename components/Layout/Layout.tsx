@@ -1,3 +1,5 @@
+import { Footer } from '../Footer';
+import { Header } from '../Header';
 import styles from './Layout.module.scss';
 
 type LayoutProps = {
@@ -8,7 +10,13 @@ const Layout: React.VFC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.root}>
       <div className={styles.container}>
-        {children}
+        <Header />
+
+        <main className={styles.main}>
+          {children}
+        </main>
+
+        <Footer />
       </div>
     </div>
   );

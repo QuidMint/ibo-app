@@ -1,17 +1,9 @@
 .root {
   display: flex;
   width: 100%;
-  height: 100%;
-  align-items: stretch;
-  flex-direction: column;
-}
-
-.main {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
+  flex-direction: row;
 }
 
 .side {
@@ -19,12 +11,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex: 1 1 20%;
 }
 
 .content {
-  flex: 1;
+  flex: 3 1 60%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  height: 100%;
+}
+
+.mintContainer {
+  flex: 1;
+  display: flex;
+}
+
+.table {
+  margin-bottom: 30px;
+}
+
+.fakeCol {
+  flex: 1 1 20%;
+  min-width: 224px;
 }

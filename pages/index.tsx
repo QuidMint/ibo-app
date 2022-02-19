@@ -1,11 +1,9 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { Footer } from '../components/Footer'
-import { Header } from '../components/Header'
-import { Mint } from '../components/Mint'
-import { Summary } from '../components/Summary'
-import { Table } from '../components/Table'
-import styles from '../styles/Home.module.scss'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { Mint } from '../components/Mint';
+import { Summary } from '../components/Summary';
+import { Table } from '../components/Table';
+import styles from '../styles/Home.module.scss';
 
 const Home: NextPage = () => {
   return (
@@ -16,21 +14,18 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
-
-      <main className={styles.main}>
-        <div className={styles.side}>
-          <Summary />
-        </div>
-        <div className={styles.content}>
+      <div className={styles.side}>
+        <Summary />
+      </div>
+      <div className={styles.content}>
+        <div className={styles.mintContainer}>
           <Mint />
-          <Table />
         </div>
-      </main>
-
-      <Footer />
+        <Table className={styles.table} />
+      </div>
+      <div className={styles.fakeCol} />
     </div>
-  )
-}
+  );
+};
 
 export default Home;
