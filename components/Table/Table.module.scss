@@ -1,0 +1,36 @@
+@use 'styles/variables';
+
+.root {
+}
+
+.header {
+  > tr > th {
+    padding: 0 20px 10px;
+    color: #ff9900;
+    font-family: variables.$primary-font;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: left;
+
+    &.alignRight {
+      text-align: right;
+    }
+  }
+}
+
+.body {
+  > tr > td {
+    padding: 0;
+    font-size: 14px;
+    line-height: 24px;
+    color: #ffffff;
+    font-family: variables.$primary-font;
+    font-weight: 300;
+    padding: 8px 20px;
+
+    > time {
+      color: #928263;
+      margin-left: 8px;
+    }
+  }
+}

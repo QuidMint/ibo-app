@@ -10,32 +10,32 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 const Table: React.VFC<TableProps> = ({ className, ...other }) => {
   return (
     <table className={cx(styles.root, className)} {...other}>
-      <thead>
+      <thead className={styles.header}>
         <tr>
           <th>Date</th>
           <th>Address</th>
-          <th>QD bought</th>
-          <th>USDT deposited</th>
-          <th>Gain</th>
+          <th className={styles.alignRight}>QD bought</th>
+          <th className={styles.alignRight}>USDT deposited</th>
+          <th className={styles.alignRight}>Gain</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className={styles.body}>
         <tr>
-          <td>01.02.2022 <time>12:00</time></td>
+          <td>01.02.2022<time>12:00</time></td>
           <td>0x4g6h...4dfb</td>
           <td>12,000,000</td>
           <td>$9,999,000.34</td>
           <td>$9,999,000.34</td>
         </tr>
         <tr>
-          <td>01.02.2022 <time>12:00</time></td>
+          <td>01.02.2022<time>12:00</time></td>
           <td>0x4g6h...4dfb</td>
           <td>12,000,000</td>
           <td>$9,999,000.34</td>
           <td>$9,999,000.34</td>
         </tr>
         <tr>
-          <td>01.02.2022 <time>12:00</time></td>
+          <td>01.02.2022<time>12:00</time></td>
           <td>0x4g6h...4dfb</td>
           <td>12,000,000</td>
           <td>$9,999,000.34</td>
