@@ -2,11 +2,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import shortedHash from '../../utils/shorted-hash';
 import { Icon } from '../Lib/Icon';
+import { useWallet } from '../../hooks/use-wallet';
 import styles from './Header.module.scss';
-
-const WALLET_HASH = '0x56m40000003mju';
+import { useState } from 'react';
 
 const Header: React.VFC = () => {
+  const { selectedAccount, connect } = useWallet();
+  const [error, setError] = useState<string | null>(null);
+
+  const handleWalletConnect = async () => {
+    try {
+      connect();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
   return (
     <header className={styles.root}>
       <div className={styles.logoContainer}>
@@ -33,12 +44,8 @@ const Header: React.VFC = () => {
           <div className={styles.summaryElTitle}>USDT balance</div>
           <div className={styles.summaryElValue}>$452,571</div>
         </div> */}
-        <button className={styles.wallet}>
-          Connect Metamask
-          <Icon name="btn-bg" className={styles.walletBackground} />
-        </button>
-        {/* <div className={styles.wallet}>
-          {WALLET_HASH ? (
+        {selectedAccount ? (
+          <div className={styles.wallet}>
             <div className={styles.metamaskIcon}>
               <Image
                 width="18"
@@ -47,10 +54,15 @@ const Header: React.VFC = () => {
                 alt="metamask"
               />
             </div>
-          ) : null}
-          {shortedHash(WALLET_HASH)}
-          <Icon name="btn-bg" className={styles.walletBackground} />
-        </div> */}
+            {shortedHash(selectedAccount)}
+            <Icon name="btn-bg" className={styles.walletBackground} />
+          </div>
+        ) : (
+          <button className={styles.wallet} onClick={handleWalletConnect}>
+            Connect Metamask
+            <Icon name="btn-bg" className={styles.walletBackground} />
+          </button>
+        )}
       </div>
     </header>
   );

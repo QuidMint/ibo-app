@@ -21,7 +21,7 @@ export const useWallet = () => {
         connector: currentConnector
     });
 
-    const { connector } = state;
+    const connector = currentConnector;
 
     const updateState = useCallback(
         (partialState: Partial<WalletState>) => {
