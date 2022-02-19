@@ -7,11 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build-svg-sprite": "node scripts/generateAssetIndex.js"
+    "build-svg-sprite": "node scripts/generateAssetIndex.js",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "classnames": "^2.3.1",
-    "next": "11.1.3",
+    "next": "12.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
@@ -23,7 +24,7 @@
     "camelcase": "^6.3.0",
     "eslint": "8.9.0",
     "eslint-config-next": "12.1.0",
-    "postcss": "^8.4.6",
+    "patch-package": "^6.4.7",
     "sass": "^1.49.7",
     "svg-sprite-loader": "^6.0.11",
     "typescript": "4.5.5",

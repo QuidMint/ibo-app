@@ -1,0 +1,15 @@
+diff --git a/node_modules/svg-sprite-loader/lib/utils/is-webpack-1.js b/node_modules/svg-sprite-loader/lib/utils/is-webpack-1.js
+index a015741..a771b3b 100644
+--- a/node_modules/svg-sprite-loader/lib/utils/is-webpack-1.js
++++ b/node_modules/svg-sprite-loader/lib/utils/is-webpack-1.js
+@@ -1,7 +1,8 @@
+ // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved, global-require
+-const webpackPkg = require('webpack/package.json') || {};
++// const webpackPkg = require('webpack/package.json') || {};
+ // eslint-disable-next-line import/no-extraneous-dependencies, import/no-unresolved, global-require
+-const webpackVersion = webpackPkg.version || require('webpack').version;
++// const webpackVersion = webpackPkg.version || require('webpack').version;
++const webpackVersion = "5.69.1";
+ 
+ const webpackMajorVersion = parseInt(webpackVersion.split('.')[0], 10);
+ 
