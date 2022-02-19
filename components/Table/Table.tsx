@@ -38,6 +38,10 @@ export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 }
 
 const Table: React.VFC<TableProps> = ({ className, ...other }) => {
+  if (!TABLE_MOCK_DATA.length) {
+    return null;
+  }
+
   return (
     <table className={cx(styles.root, className)} {...other}>
       <thead className={styles.header}>
