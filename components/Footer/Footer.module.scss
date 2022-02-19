@@ -26,6 +26,7 @@
   cursor: pointer;
   font-family: variables.$primary-font;
   padding: 0;
+  user-select: none;
 }
 
 .musicWave {
@@ -45,6 +46,7 @@
   cursor: pointer;
   font-family: variables.$primary-font;
   padding: 0 20px;
+  user-select: none;
 }
 
 .scrollIcon {

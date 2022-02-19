@@ -65,7 +65,6 @@
   border: none;
   color: #ff9900;
   padding: 41px 45px 27px;
-  cursor: pointer;
   line-height: 20px;
   font-size: 12px;
   font-family: variables.$primary-font;
@@ -77,11 +76,18 @@
   }
 }
 
+button.wallet {
+  cursor: pointer;
+  user-select: none;
+}
+
 .metamaskIcon {
   display: block;
   margin-right: 10px;
   font-size: 0;
   line-height: 0;
+  user-select: none;
+  pointer-events: none;
 }
 
 .walletBackground {
