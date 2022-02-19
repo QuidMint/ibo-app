@@ -93,7 +93,7 @@
   position: relative;
 
   &:hover > .maxButtonBackground {
-    opacity: 1;
+    opacity: 0.2;
   }
 }
 
@@ -108,7 +108,7 @@
   left: -1px;
   top: -26px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.3s;
 }
 
 .sub {
