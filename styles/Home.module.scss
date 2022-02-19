@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
+  padding-bottom: 30px;
 }
 
 .side {
@@ -26,10 +27,6 @@
 .mintContainer {
   flex: 1;
   display: flex;
-}
-
-.table {
-  margin-bottom: 30px;
 }
 
 .fakeCol {

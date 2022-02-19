@@ -21,7 +21,7 @@ const Home: NextPage = () => {
         <div className={styles.mintContainer}>
           <Mint />
         </div>
-        <Table className={styles.table} />
+        <Table />
       </div>
       <div className={styles.fakeCol} />
     </div>

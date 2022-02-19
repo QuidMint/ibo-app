@@ -1,11 +1,19 @@
 .root {
+  position: relative;
+  z-index: 1;
+  padding: 0 100px;
+  min-width: 1200px;
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
   background-image: url('../../images/noise-background.jpg');
   background-repeat: repeat;
   background-size: cover;
   background-position: center;
-  position: relative;
-  color: #ffffff;
-  font-size: 12px;
 
   &:before {
     content: '';
@@ -35,20 +43,6 @@
     right: 0;
     transform: rotate(180deg);
   }
-}
-
-.container {
-  position: relative;
-  z-index: 1;
-  padding: 0 100px;
-  min-width: 100vw;
-  width: 100%;
-  min-height: 100vh;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: space-between;
 }
 
 .main {

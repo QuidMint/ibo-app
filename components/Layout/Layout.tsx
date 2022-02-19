@@ -3,21 +3,17 @@ import { Header } from '../Header';
 import styles from './Layout.module.scss';
 
 type LayoutProps = {
-  children?: React.ReactChildren
-}
+  children?: React.ReactChildren;
+};
 
 const Layout: React.VFC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <div className={styles.container}>
-        <Header />
+      <Header />
 
-        <main className={styles.main}>
-          {children}
-        </main>
+      <main className={styles.main}>{children}</main>
 
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };
