@@ -14,7 +14,7 @@ const Header: React.VFC = () => {
           <a className={styles.logo} />
         </Link>
       </div>
-      <div className={styles.summary}>
+      {/* <div className={styles.summary}>
         <div className={styles.summaryEl}>
           <div className={styles.summaryElTitle}>Deposited</div>
           <div className={styles.summaryElValue}>$20,000</div>
@@ -27,17 +27,17 @@ const Header: React.VFC = () => {
           <div className={styles.summaryElTitle}>Gains</div>
           <div className={styles.summaryElValue}>$452,571</div>
         </div>
-      </div>
+      </div> */}
       <div className={styles.walletContainer}>
-        <div className={styles.summaryEl}>
+        {/* <div className={styles.summaryEl}>
           <div className={styles.summaryElTitle}>USDT balance</div>
           <div className={styles.summaryElValue}>$452,571</div>
-        </div>
-        {/* <button className={styles.wallet}>
+        </div> */}
+        <button className={styles.wallet}>
           Connect Metamask
           <Icon name="btn-bg" className={styles.walletBackground} />
-        </button> */}
-        <div className={styles.wallet}>
+        </button>
+        {/* <div className={styles.wallet}>
           {WALLET_HASH ? (
             <div className={styles.metamaskIcon}>
               <Image
@@ -50,7 +50,7 @@ const Header: React.VFC = () => {
           ) : null}
           {shortedHash(WALLET_HASH)}
           <Icon name="btn-bg" className={styles.walletBackground} />
-        </div>
+        </div> */}
       </div>
     </header>
   );
