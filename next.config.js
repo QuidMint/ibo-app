@@ -5,6 +5,7 @@ const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const nextConfig = {
   reactStrictMode: true,
+  target: "experimental-serverless-trace",
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
