@@ -159,6 +159,16 @@
   margin-left: 16px;
   position: absolute;
   left: 100%;
+
+  &:hover {
+    .submitBtnL1 {
+      color: #ffbb00;
+    }
+
+    .glowEffect {
+      box-shadow: 0 0 50px 0px #ff9900;
+    }
+  }
 }
 
 .submitBtnL1 {
@@ -170,6 +180,7 @@
   z-index: -1;
   left: 0;
   top: -4px;
+  transition: 0.3s;
 }
 
 .submitBtnL2 {
@@ -194,4 +205,16 @@
   z-index: -3;
   top: -2px;
   left: -2px;
+}
+
+.glowEffect {
+  pointer-events: none;
+  transition: 0.3s;
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  z-index: -4;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

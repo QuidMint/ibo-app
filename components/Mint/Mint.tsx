@@ -84,6 +84,7 @@ const Mint: React.VFC = () => {
           className={styles.submitBtnL3}
           name="composite-btn-l3"
         />
+        <div className={styles.glowEffect} />
       </button>
     </form>
   );
