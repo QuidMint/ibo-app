@@ -30,7 +30,7 @@ const Mint: React.VFC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // contract?.mint(mintValue, 0);
+    contract?.mint(mintValue);
   };
 
   return (
