@@ -13,8 +13,13 @@
   "dependencies": {
     "classnames": "^2.3.1",
     "next": "12.1.0",
+    "@ethersproject/contracts": "^5.5.0",
+    "@ethersproject/providers": "^5.5.3",
+    "@ethersproject/units": "^5.5.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "web3": "^1.7.0",
+    "web3-eth-contract": "^1.7.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.2.1",
