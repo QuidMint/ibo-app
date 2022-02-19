@@ -12,7 +12,7 @@
     line-height: 20px;
     text-align: left;
 
-    &[align='right'] {
+    &.right {
       text-align: right;
     }
   }
@@ -29,7 +29,7 @@
     padding: 8px 20px;
     text-align: left;
 
-    &[align='right'] {
+    &.right {
       text-align: right;
     }
 
