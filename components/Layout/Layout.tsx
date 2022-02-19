@@ -2,11 +2,7 @@ import { Footer } from '../Footer';
 import { Header } from '../Header';
 import styles from './Layout.module.scss';
 
-type LayoutProps = {
-  children?: React.ReactChildren;
-};
-
-const Layout: React.VFC<LayoutProps> = ({ children }) => {
+const Layout: React.FC = ({ children }) => {
   return (
     <div className={styles.root}>
       <Header />
