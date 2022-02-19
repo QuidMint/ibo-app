@@ -1,9 +1,8 @@
 import { ChangeEvent, useState } from 'react';
-import type { NextPage } from 'next';
 import { Icon } from '../Lib/Icon';
 import styles from './Mint.module.scss';
 
-const Mint: NextPage = () => {
+const Mint: React.VFC = () => {
   const [value, setValue] = useState("");
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -23,9 +22,8 @@ const Mint: NextPage = () => {
     }
   }
 
-
   return (
-    <div className={styles.root}>
+    <form className={styles.root}>
       <div>
         <div className={styles.availability}>
           <span className={styles.availabilityTitle}>
@@ -64,13 +62,13 @@ const Mint: NextPage = () => {
           </div>
         </div>
       </div>
-      <button className={styles.submit}>
+      <button type="submit" className={styles.submit}>
         Mint
         <Icon preserveAspectRatio="none" className={styles.submitBtnL1} name="composite-btn-l1" />
         <Icon preserveAspectRatio="none" className={styles.submitBtnL2} name="composite-btn-l2" />
         <Icon preserveAspectRatio="none" className={styles.submitBtnL3} name="composite-btn-l3" />
       </button>
-    </div>
+    </form>
   );
 };
 

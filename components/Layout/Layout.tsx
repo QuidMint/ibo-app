@@ -1,7 +1,10 @@
-import type { NextPage } from 'next';
 import styles from './Layout.module.scss';
 
-const Layout: NextPage = ({ children }) => {
+type LayoutProps = {
+  children?: React.ReactChildren
+}
+
+const Layout: React.VFC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.root}>
       <div className={styles.container}>

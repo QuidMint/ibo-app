@@ -1,8 +1,7 @@
-import type { NextPage } from 'next';
 import { Icon } from '../Lib/Icon';
 import styles from './Footer.module.scss';
 
-const Footer: NextPage = () => {
+const Footer: React.VFC = () => {
   return (
     <footer className={styles.root}>
       <button className={styles.music}>

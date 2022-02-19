@@ -1,9 +1,9 @@
 import React from 'react';
-import cn from 'classnames';
+import cx from 'classnames';
 
 import icons from '../../../icons';
 
-import s from './Icon.module.scss';
+import styles from './Icon.module.scss';
 
 export type IconNamesType = keyof typeof icons;
 
@@ -20,7 +20,7 @@ const Icon: React.VFC<IconProps> = ({ className, name, onClick, ...other }) => {
   return (
     <svg
       viewBox={viewBox}
-      className={cn(s.root, className)}
+      className={cx(styles.root, className)}
       onClick={onClick}
       {...other}
     >

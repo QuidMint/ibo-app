@@ -11,7 +11,6 @@ import email from './email.svg';
 import github from './github.svg';
 import information from './information.svg';
 import musicWave from './music-wave.svg';
-import twitter from './twitter.svg';
 
 const icons = {
   'arrow-down': arrowDown,
@@ -25,7 +24,6 @@ const icons = {
   github,
   information,
   'music-wave': musicWave,
-  twitter,
 };
 
 export default icons;
