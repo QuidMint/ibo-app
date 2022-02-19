@@ -15,18 +15,18 @@ const Footer: NextPage = () => {
       </button>
       <div className={styles.info}>
         <div className={styles.socialLinks}>
-          <a href="#" className={styles.socialLink}>
-            <Icon name="twitter" className={styles.socialIcon} />
+          <a href="https://book.quid.io/" target="_blank" rel="noreferrer" className={styles.socialLink}>
+            <Icon name="book" className={styles.socialIcon} />
           </a>
-          <a href="#" className={styles.socialLink}>
+          <a href="https://github.com/QuidMint" target="_blank" rel="noreferrer" className={styles.socialLink}>
             <Icon name="github" className={styles.socialIcon} />
           </a>
-          <a href="#" className={styles.socialLink}>
+          <a href="mailto:rich@quid.io" target="_blank" rel="noreferrer" className={styles.socialLink}>
             <Icon name="email" className={styles.socialIcon} />
           </a>
         </div>
       </div>
-    </footer >
+    </footer>
   );
 };
 

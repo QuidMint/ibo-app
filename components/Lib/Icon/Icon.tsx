@@ -11,6 +11,7 @@ export interface IconProps extends React.HTMLAttributes<SVGElement> {
   className?: string;
   name: IconNamesType;
   onClick?: (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => void;
+  preserveAspectRatio?: 'none';
 }
 
 const Icon: React.VFC<IconProps> = ({ className, name, onClick, ...other }) => {

@@ -1,0 +1,193 @@
+@use 'styles/variables';
+
+.root {
+  display: inline-flex;
+  align-self: center;
+  justify-self: center;
+  margin: 0 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.availability {
+  margin-bottom: 16px;
+}
+
+.availabilityTitle {
+  color: #ffffff;
+  line-height: 28px;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.availabilityCurrent {
+  color: #ffffff;
+  line-height: 28px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.availabilityDivideSign {
+  margin: 0 4px;
+  font-size: 14px;
+  line-height: 24px;
+  color: #928263;
+}
+
+.availabilityMax {
+  font-size: 14px;
+  line-height: 24px;
+  color: #928263;
+}
+
+.inputContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #352200;
+}
+
+.dollarSign {
+  font-family: variables.$secondary-font;
+  margin-right: 12px;
+  opacity: 0.6;
+  height: 112px;
+  font-size: 108px;
+  color: #ff9900;
+}
+
+.input {
+  width: 500px;
+  height: 112px;
+  font-size: 108px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ff9900;
+  font-family: variables.$secondary-font;
+  opacity: 0.6;
+
+  &::placeholder {
+    font-family: variables.$secondary-font;
+    opacity: 0.33;
+    line-height: 112px;
+    font-size: 108px;
+    color: #ff9900;
+  }
+}
+
+.maxButton {
+  display: block;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #ff9900;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: variables.$primary-font;
+  position: relative;
+
+  &:hover > .maxButtonBackground {
+    opacity: 1;
+  }
+}
+
+.maxButtonBackground {
+  display: block;
+  color: #ff9900;
+  position: absolute;
+  pointer-events: none;
+  width: 69px;
+  height: 99px;
+  z-index: -1;
+  left: -1px;
+  top: -26px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.subLeft {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 300;
+
+  strong {
+    font-weight: 600;
+    margin-left: 6px;
+  }
+}
+
+.subRight {
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 300;
+  color: #928263;
+
+  strong {
+    font-weight: 600;
+    margin-right: 6px;
+  }
+}
+
+.submit {
+  display: block;
+  width: 224px;
+  height: 72px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 24px;
+  color: #0a0600;
+  font-family: variables.$primary-font;
+  border: none;
+  margin-top: 3px;
+  font-weight: 600;
+  background: none;
+  margin-left: 16px;
+  position: relative;
+}
+
+.submitBtnL1 {
+  width: 224px;
+  height: 72px;
+  color: #ff9900;
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  left: 0;
+  top: -4px;
+}
+
+.submitBtnL2 {
+  width: 238px;
+  height: 109px;
+  color: #ff9900;
+  opacity: 0.4;
+  position: absolute;
+  pointer-events: none;
+  z-index: -2;
+  left: -3px;
+  top: -18px;
+}
+
+.submitBtnL3 {
+  width: 233px;
+  height: 80px;
+  color: #ff9900;
+  opacity: 0.1;
+  position: absolute;
+  pointer-events: none;
+  z-index: -3;
+  top: -2px;
+  left: -2px;
+}

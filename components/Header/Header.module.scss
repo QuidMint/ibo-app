@@ -44,7 +44,6 @@
   font-weight: bold;
   margin-top: 2px;
   font-family: variables.$secondary-font;
-  font-weight: 400;
 }
 
 .walletContainer {
@@ -69,4 +68,5 @@
   cursor: pointer;
   line-height: 20px;
   font-size: 12px;
+  font-family: variables.$primary-font;
 }
