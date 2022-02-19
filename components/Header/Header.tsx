@@ -1,5 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import shortedHash from '../../utils/shorted-hash';
 import styles from './Header.module.scss';
+
+const WALLET_HASH = '0x56m40000003mju';
 
 const Header: React.VFC = () => {
   return (
@@ -28,7 +32,20 @@ const Header: React.VFC = () => {
           <div className={styles.summaryElTitle}>USDT balance</div>
           <div className={styles.summaryElValue}>$452,571</div>
         </div>
-        <button className={styles.connectWallet}>Connect Metamask</button>
+        <button className={styles.wallet}>Connect Metamask</button>
+        <button className={styles.wallet}>
+          {WALLET_HASH ? (
+            <div className={styles.metamaskIcon}>
+              <Image
+                width="18"
+                height="18"
+                src="/images/metamask.svg"
+                alt="metamask"
+              />
+            </div>
+          ) : null}
+          {shortedHash(WALLET_HASH)}
+        </button>
       </div>
     </header>
   );
