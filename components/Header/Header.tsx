@@ -4,17 +4,28 @@ import shortedHash from '../../utils/shorted-hash';
 import { Icon } from '../Lib/Icon';
 import { useWallet } from '../../hooks/use-wallet';
 import styles from './Header.module.scss';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { ProviderRpcError } from '../../connectors/core/types';
+import { NotificationContext } from '../Notification/NotificationProvider';
 
 const Header: React.VFC = () => {
+  const { notify } = useContext(NotificationContext);
   const { selectedAccount, connect } = useWallet();
-  const [error, setError] = useState<string | null>(null);
 
   const handleWalletConnect = async () => {
     try {
-      connect();
+      await connect();
+      notify({
+        severity: 'success',
+        message: 'Your wallet successfuly connected',
+        autoHideDuration: 5000,
+      });
     } catch (err) {
-      setError((err as Error).message);
+      const error = err as ProviderRpcError;
+
+      if (error.code === 4001) {
+        notify({ message: error.message, autoHideDuration: 6000 });
+      }
     }
   };
 

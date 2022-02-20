@@ -1,6 +1,10 @@
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { Layout } from '../components/Layout';
+import {
+  NotificationList,
+  NotificationProvider,
+} from '../components/Notification';
 import { MetamaskConnector } from '../connectors';
 import { useWallet } from '../hooks/use-wallet';
 import '../styles/globals.css';
@@ -15,9 +19,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }, [setConnector]);
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <NotificationProvider>
+      <NotificationList />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </NotificationProvider>
   );
 };
 
