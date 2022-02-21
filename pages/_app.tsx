@@ -5,11 +5,15 @@ import {
   NotificationList,
   NotificationProvider,
 } from '../components/Notification';
-import { MetamaskConnector } from '../connectors';
+import { MetamaskConnector } from '../lib/connectors';
 import { useWallet } from '../hooks/use-wallet';
+import { init } from '../lib/startup';
+
 import '../styles/globals.css';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+init();
+
+const App = ({ Component, pageProps }: AppProps) => {
   const { setConnector } = useWallet();
 
   useEffect(() => {
@@ -28,4 +32,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default MyApp;
+export default App;

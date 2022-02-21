@@ -1,3 +1,5 @@
+import { TypedEventEmitter } from '../../../types';
+
 // per EIP-1193
 export interface RequestArguments {
   readonly method: string;
@@ -23,18 +25,7 @@ interface ProviderEvents {
   accountsChanged: (accounts: string[]) => void;
 }
 
-export interface TypedEventEmitter {
-  on<E extends keyof ProviderEvents>(
-    event: E,
-    listener: ProviderEvents[E],
-  ): this;
-  removeListener<E extends keyof ProviderEvents>(
-    event: E,
-    listener: ProviderEvents[E],
-  ): this;
-}
-
 // per EIP-1193
-export interface Provider extends TypedEventEmitter {
+export interface Provider extends TypedEventEmitter<ProviderEvents> {
   request<T extends unknown>(args: RequestArguments): Promise<T>;
 }

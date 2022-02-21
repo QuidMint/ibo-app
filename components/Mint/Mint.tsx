@@ -4,6 +4,7 @@ import { useQuidContract } from '../../hooks/use-quid-contract';
 import { useWallet } from '../../hooks/use-wallet';
 import { NotificationContext } from '../Notification/NotificationProvider';
 import { Icon } from '../Lib/Icon';
+import { Web3Provider } from '@ethersproject/providers';
 
 import styles from './Mint.module.scss';
 
@@ -11,7 +12,7 @@ const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const { notify } = useContext(NotificationContext);
   const contract = useQuidContract();
-  const { selectedAccount, connect } = useWallet();
+  const { selectedAccount, provider, connect } = useWallet();
 
   useEffect(() => {
     const fetch = async () => {

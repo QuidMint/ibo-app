@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { AbstractConnector } from '../connectors';
+import { AbstractConnector } from '../lib/connectors';
 import {
   ProviderConnectInfo,
   ProviderRpcError,
-} from '../connectors/core/types';
+} from '../lib/connectors/core/types';
 
 let currentConnector: AbstractConnector | null = null;
 

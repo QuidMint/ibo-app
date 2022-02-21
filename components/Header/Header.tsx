@@ -5,7 +5,7 @@ import { Icon } from '../Lib/Icon';
 import { useWallet } from '../../hooks/use-wallet';
 import styles from './Header.module.scss';
 import { useContext, useState } from 'react';
-import { ProviderRpcError } from '../../connectors/core/types';
+import { ProviderRpcError } from '../../lib/connectors/core/types';
 import { NotificationContext } from '../Notification/NotificationProvider';
 
 const Header: React.VFC = () => {

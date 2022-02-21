@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
-import { abi } from '../contracts/QD.json';
+import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { useWallet } from './use-wallet';
 
-export const useContract = (contractId: string) => {
+export const useContract = (contractId: string, abi: ContractInterface) => {
   const { provider } = useWallet();
 
   return useMemo(() => {
@@ -13,5 +12,5 @@ export const useContract = (contractId: string) => {
 
       return new Contract(contractId, abi, web3Provider.getSigner());
     }
-  }, [contractId, provider]);
+  }, [abi, contractId, provider]);
 };
