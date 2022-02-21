@@ -4,47 +4,35 @@ import shortedHash from '../../utils/shorted-hash';
 
 import styles from './Table.module.scss';
 
-const TABLE_MOCK_DATA: any = [
-  // {
-  //   id: '0',
-  //   date: '01.02.2022',
-  //   time: '12:00',
-  //   address: '0x4g6h000004dfb',
-  //   qd: '12,000,000',
-  //   usdt: '$9,999,000.34',
-  //   gain: '$9,999,000.34',
-  // },
-  // {
-  //   id: '1',
-  //   date: '01.02.2022',
-  //   time: '12:34',
-  //   address: '0x345g00000bn67',
-  //   qd: '12,000,000',
-  //   usdt: '$1,000.00',
-  //   gain: '$9,999,000.34',
-  // },
-  // {
-  //   id: '2',
-  //   date: '01.02.2022',
-  //   time: '14:56',
-  //   address: '0x1svf00000kio9',
-  //   qd: '12,000,000',
-  //   usdt: '$100.56',
-  //   gain: '$9,999,000.34',
-  // },
-];
-
 export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   className?: string;
+  rarefied?: boolean;
+  data: {
+    id: string;
+    date: string;
+    time: string;
+    address: string;
+    qd: string;
+    usdt: string;
+    gain: string;
+  }[];
 }
 
-const Table: React.VFC<TableProps> = ({ className, ...other }) => {
-  if (!TABLE_MOCK_DATA.length) {
+const Table: React.VFC<TableProps> = ({
+  className,
+  data,
+  rarefied = false,
+  ...other
+}) => {
+  if (!data.length) {
     return null;
   }
 
   return (
-    <table className={cx(styles.root, className)} {...other}>
+    <table
+      className={cx(styles.root, { [styles.rarefied]: rarefied }, className)}
+      {...other}
+    >
       <thead className={styles.header}>
         <tr>
           <th>Date</th>
@@ -55,7 +43,7 @@ const Table: React.VFC<TableProps> = ({ className, ...other }) => {
         </tr>
       </thead>
       <tbody className={styles.body}>
-        {TABLE_MOCK_DATA.map((tr: any) => (
+        {data.map((tr: any) => (
           <tr key={tr.id}>
             <td>
               {tr.date}

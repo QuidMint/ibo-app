@@ -1,10 +1,22 @@
 .root {
+  width: 100%;
+  flex: 1 1 auto;
+  position: relative;
+}
+
+.carousel {
+  height: calc(100vh - 241px);
+}
+
+.slide {
   display: flex;
   width: 100%;
+  height: auto;
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
   padding-bottom: 30px;
+  overflow: hidden;
 }
 
 .side {
@@ -32,7 +44,7 @@
 
 .fakeCol {
   flex: 1 1 20%;
-  min-width: 224px;
+  min-width: 240px;
 }
 
 .not {
@@ -51,4 +63,37 @@
   position: absolute;
   right: 0;
   top: 350px;
+}
+
+.scrollAssist {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: calc(100% + 30px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tableSlide {
+  display: flex;
+  width: 100%;
+  max-height: 100%;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.tableWrapper {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.tableSlideTitle {
+  padding: 34px 20px;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 600;
+  margin: 0;
 }

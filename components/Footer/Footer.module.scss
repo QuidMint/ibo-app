@@ -4,17 +4,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0 30px;
-}
-
-.musicContainer {
-  flex: 1 1 20%;
-}
-
-.scrollContainer {
-  flex: 10 1 auto;
-  display: flex;
-  justify-content: center;
+  margin: 30px 0;
+  height: 48px;
 }
 
 .music {
@@ -34,13 +25,6 @@
   height: 24px;
   color: #ff9900;
   margin-right: 6px;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  flex: 1 1 20%;
 }
 
 .socialLinks {
