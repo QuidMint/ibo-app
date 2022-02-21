@@ -1,6 +1,17 @@
-import { ChangeEvent, FormEvent, useRef, useState } from 'react';
-import { useContract } from '../../hooks/use-contract';
+import {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from 'react';
+import { formatUnits } from '@ethersproject/units';
+import { useQuidContract } from '../../hooks/use-quid-contract';
+import { useWallet } from '../../hooks/use-wallet';
+import { NotificationContext } from '../Notification/NotificationProvider';
 import { Icon } from '../Lib/Icon';
+
 import styles from './Mint.module.scss';
 
 const MAX_VALUE = '45000.34';
@@ -8,7 +19,25 @@ const MAX_VALUE = '45000.34';
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const contract = useContract();
+  const { notify } = useContext(NotificationContext);
+  const contract = useQuidContract();
+  const { selectedAccount, provider, connect } = useWallet();
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!contract) return;
+
+      const result = await contract.get_total_supply_cap();
+      const result1 = await contract.qd_amount_to_usdt_amount(
+        result,
+        1645369111,
+      );
+
+      console.log('get_total_supply_cap: ', formatUnits(result1, 18));
+    };
+
+    fetch();
+  }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
@@ -45,9 +74,26 @@ const Mint: React.VFC = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // contract?.mint(mintValue, 0);
+
+    if (!selectedAccount) {
+      notify({
+        severity: 'error',
+        message: 'Please connect your wallet',
+      });
+      return;
+    }
+
+    try {
+      await contract?.mint(mintValue);
+    } catch (err) {
+      notify({
+        severity: 'error',
+        message: (err as Error).message,
+        autoHideDuration: 3200,
+      });
+    }
   };
 
   return (

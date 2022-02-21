@@ -1,11 +1,19 @@
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { Layout } from '../components/Layout';
-import { MetamaskConnector } from '../connectors';
+import {
+  NotificationList,
+  NotificationProvider,
+} from '../components/Notification';
+import { MetamaskConnector } from '../lib/connectors';
 import { useWallet } from '../hooks/use-wallet';
+import { init } from '../lib/startup';
+
 import '../styles/globals.css';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+init();
+
+const App = ({ Component, pageProps }: AppProps) => {
   const { setConnector } = useWallet();
 
   useEffect(() => {
@@ -15,10 +23,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }, [setConnector]);
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <NotificationProvider>
+      <NotificationList />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </NotificationProvider>
   );
 };
 
-export default MyApp;
+export default App;

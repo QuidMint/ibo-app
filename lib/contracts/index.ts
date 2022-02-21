@@ -1,0 +1,1 @@
+export { ContractWatcher } from './ContractWatcher';
