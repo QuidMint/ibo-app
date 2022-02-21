@@ -3,7 +3,6 @@
 import arrowDown from './arrow-down.svg';
 import book from './book.svg';
 import btnBg from './btn-bg.svg';
-import close from './close.svg';
 import compositeBtnL1 from './composite-btn-l1.svg';
 import compositeBtnL2 from './composite-btn-l2.svg';
 import compositeBtnL3 from './composite-btn-l3.svg';
@@ -16,7 +15,6 @@ const icons = {
   'arrow-down': arrowDown,
   book,
   'btn-bg': btnBg,
-  close,
   'composite-btn-l1': compositeBtnL1,
   'composite-btn-l2': compositeBtnL2,
   'composite-btn-l3': compositeBtnL3,

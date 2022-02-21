@@ -36,26 +36,6 @@
   margin-right: 6px;
 }
 
-.scroll {
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-weight: 600;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-  font-family: variables.$primary-font;
-  padding: 0 20px;
-  user-select: none;
-}
-
-.scrollIcon {
-  display: block;
-  width: 31px;
-  margin: 4px auto 0;
-  color: #ff9900;
-}
-
 .info {
   display: flex;
   flex-direction: column;

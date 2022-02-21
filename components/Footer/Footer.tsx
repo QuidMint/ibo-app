@@ -1,4 +1,5 @@
 import { Icon } from '../Lib/Icon';
+import { ScrollAssistant } from '../ScrollAssistant';
 import styles from './Footer.module.scss';
 
 const Footer: React.VFC = () => {
@@ -11,10 +12,7 @@ const Footer: React.VFC = () => {
         </button>
       </div>
       <div className={styles.scrollContainer}>
-        <button className={styles.scroll}>
-          See more
-          <Icon name="arrow-down" className={styles.scrollIcon} />
-        </button>
+        <ScrollAssistant />
       </div>
       <div className={styles.info}>
         <div className={styles.socialLinks}>

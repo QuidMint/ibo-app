@@ -1,10 +1,13 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import { useContract } from '../../hooks/use-contract';
 import { Icon } from '../Lib/Icon';
 import styles from './Mint.module.scss';
 
+const MAX_VALUE = '45000.34';
+
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const contract = useContract();
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -23,8 +26,22 @@ const Mint: React.VFC = () => {
       originalValue = '0' + originalValue;
     }
 
+    if (Number(originalValue) > Number(MAX_VALUE)) {
+      originalValue = MAX_VALUE;
+    }
+
     if (regex.test(originalValue)) {
       setMintValue(originalValue);
+    }
+  };
+
+  const handleSetMaxValue = () => {
+    if (mintValue !== MAX_VALUE) {
+      setMintValue(MAX_VALUE);
+    }
+
+    if (inputRef) {
+      inputRef.current?.focus();
     }
   };
 
@@ -53,8 +70,9 @@ const Mint: React.VFC = () => {
             value={mintValue}
             onChange={handleChangeValue}
             placeholder="Deposit amount"
+            ref={inputRef}
           />
-          <button className={styles.maxButton}>
+          <button className={styles.maxButton} onClick={handleSetMaxValue}>
             Max
             <Icon
               preserveAspectRatio="none"
