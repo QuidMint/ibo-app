@@ -19,12 +19,22 @@ import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
 
 const MAX_VALUE = '45000.34';
+const ONE_DAY = 24 * 60 * 60 * 1000;
+const START_PRICE = 22;
+const FINAL_PRICE = 96;
+const SALE_LENGTH = 42;
+
+const getQDPrice = (timestamp: number) => {
+  return (
+    ((Date.now() - timestamp) / ONE_DAY) *
+    ((FINAL_PRICE - START_PRICE) / SALE_LENGTH)
+  );
+};
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { notify } = useContext(NotificationContext);
-  const { provider } = useWallet();
   const contract = useQuidContract();
   const usdtContract = useUsdtContract();
   const { selectedAccount } = useWallet();
@@ -83,7 +93,10 @@ const Mint: React.VFC = () => {
   }, [contract]);
 
   useEffect(() => {
-    console.log('deployTransaction: ', contract?.deployTransaction);
+    contract?.auction_start().then((auctionStart: BigNumber) => {
+      const timestampMS = auctionStart.toNumber() * 1000;
+      setAuctionStartTimestamp(timestampMS);
+    });
   }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
