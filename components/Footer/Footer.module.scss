@@ -11,6 +11,7 @@
 .media {
   display: flex;
   align-items: center;
+  user-select: none;
 }
 
 .music {
@@ -22,7 +23,6 @@
   cursor: pointer;
   font-family: variables.$primary-font;
   padding: 0;
-  user-select: none;
 }
 
 .musicWave {
