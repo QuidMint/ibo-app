@@ -9,7 +9,11 @@ import compositeBtnL3 from './composite-btn-l3.svg';
 import email from './email.svg';
 import github from './github.svg';
 import information from './information.svg';
+import linkHover1 from './link-hover-1.svg';
+import linkHover2 from './link-hover-2.svg';
+import linkHover3 from './link-hover-3.svg';
 import musicWave from './music-wave.svg';
+import youtube from './youtube.svg';
 
 const icons = {
   'arrow-down': arrowDown,
@@ -21,7 +25,11 @@ const icons = {
   email,
   github,
   information,
+  'link-hover-1': linkHover1,
+  'link-hover-2': linkHover2,
+  'link-hover-3': linkHover3,
   'music-wave': musicWave,
+  youtube,
 };
 
 export default icons;
