@@ -19,17 +19,6 @@ import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
 
 const MAX_VALUE = '45000.34';
-const ONE_DAY = 24 * 60 * 60 * 1000;
-const START_PRICE = 22;
-const FINAL_PRICE = 96;
-const SALE_LENGTH = 42;
-
-const getQDPrice = (timestamp: number) => {
-  return (
-    ((Date.now() - timestamp) / ONE_DAY) *
-    ((FINAL_PRICE - START_PRICE) / SALE_LENGTH)
-  );
-};
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
