@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev1": "rm -rf .next && yarn build-svg-sprite && tsnd --ignore-watch .next --respawn server/index.ts",
+    "build1": "next build && tsc --project tsconfig.server.json",
+    "start1": "NODE_ENV=production node dist/index.js",
     "dev": "rm -rf .next && yarn build-svg-sprite && next dev",
     "build": "next build",
     "start": "next start",
