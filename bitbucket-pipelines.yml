@@ -29,35 +29,35 @@ definitions:
     - step: &docker-build-publish
         name: Docker - Build and Publish
         services:
-        - docker
+          - docker
         caches:
-        - docker-cache
+          - docker-cache
         script:
-        - |
-          source environment.sh
-          export APP_NAME=ui
-          if [[ -f "docker-cache/cache.tar" ]]; then
-            docker load < docker-cache/cache.tar;
-          fi
-        - &docker-build >-
-          docker build
-          -t quid-${APP_NAME}:latest
-          -t quid-${APP_NAME}:develop-latest
-          -t quid-${APP_NAME}:$DOCKER_ENV_TAG
-          .
-        - >-
-          docker save $(docker images -qa) > docker-cache/cache.tar;
-        - &docker-push
-          pipe: atlassian/aws-ecr-push-image:1.4.2
-          variables:
-            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            IMAGE_NAME: quid-${APP_NAME}
-            TAGS: >-
-              latest
-              develop-latest
-              $DOCKER_ENV_TAG
+          - |
+            source environment.sh
+            export APP_NAME=ui
+            if [[ -f "docker-cache/cache.tar" ]]; then
+              docker load < docker-cache/cache.tar;
+            fi
+          - &docker-build >-
+            docker build
+            -t quid-${APP_NAME}:latest
+            -t quid-${APP_NAME}:develop-latest
+            -t quid-${APP_NAME}:$DOCKER_ENV_TAG
+            .
+          - >-
+            docker save $(docker images -qa) > docker-cache/cache.tar;
+          - &docker-push
+            pipe: atlassian/aws-ecr-push-image:1.4.2
+            variables:
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              IMAGE_NAME: quid-${APP_NAME}
+              TAGS: >-
+                latest
+                develop-latest
+                $DOCKER_ENV_TAG
 
     - step: &helm-build-deploy
         name: Helm - Build and Deploy
@@ -85,19 +85,18 @@ definitions:
           - <<: &helm-deploy
               pipe: atlassian/aws-eks-kubectl-run:2.2.0
               variables:
-                AWS_ACCESS_KEY_ID: "$AWS_ACCESS_KEY_ID"
-                AWS_SECRET_ACCESS_KEY: "$AWS_SECRET_ACCESS_KEY"
-                AWS_DEFAULT_REGION: "$AWS_DEFAULT_REGION"
-                CLUSTER_NAME: "$CLUSTER_NAME"
-                ROLE_ARN: "$ROLE_ARN"
+                AWS_ACCESS_KEY_ID: '$AWS_ACCESS_KEY_ID'
+                AWS_SECRET_ACCESS_KEY: '$AWS_SECRET_ACCESS_KEY'
+                AWS_DEFAULT_REGION: '$AWS_DEFAULT_REGION'
+                CLUSTER_NAME: '$CLUSTER_NAME'
+                ROLE_ARN: '$ROLE_ARN'
                 KUBECTL_COMMAND: 'apply'
-                RESOURCE_PATH: "manifests"
+                RESOURCE_PATH: 'manifests'
                 KUBECTL_ARGS:
-                  - "--namespace=quid-$BITBUCKET_DEPLOYMENT_ENVIRONMENT"
+                  - '--namespace=quid-$BITBUCKET_DEPLOYMENT_ENVIRONMENT'
         artifacts:
           - manifests/**
           - environment.sh
-
 
 pipelines:
   pull-requests:
