@@ -15,7 +15,6 @@ type WalletState = {
   chainId: string | null;
   error: Error | ProviderRpcError | null;
   connector: AbstractConnector | null;
-  provider: Web3Provider | null;
 };
 
 export const useWallet = () => {
@@ -24,7 +23,6 @@ export const useWallet = () => {
     accounts: [],
     chainId: null,
     error: null,
-    provider: null,
     connector: currentConnector,
   });
 

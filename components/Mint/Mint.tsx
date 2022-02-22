@@ -24,6 +24,7 @@ const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { notify } = useContext(NotificationContext);
+  const { provider } = useWallet();
   const contract = useQuidContract();
   const usdtContract = useUsdtContract();
   const { selectedAccount } = useWallet();
@@ -79,6 +80,10 @@ const Mint: React.VFC = () => {
       updateTotalSupply();
     }
     return () => timerId && clearInterval(timerId);
+  }, [contract]);
+
+  useEffect(() => {
+    console.log('deployTransaction: ', contract?.deployTransaction);
   }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
