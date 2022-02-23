@@ -17,6 +17,8 @@ type QuidEvents = {
 };
 
 export async function run() {
+  console.log('Initialize watching');
+
   const quidWatcher = new ContractWatcher<QuidEvents>(
     process.env.NEXT_PUBLIC_CONTRACT_ID!,
     contractJson.abi,
@@ -55,5 +57,6 @@ export async function run() {
     }
   };
 
+  console.log('[QuidWatcher]: subctive to mint event');
   quidWatcher.on('Mint', handleMint);
 }
