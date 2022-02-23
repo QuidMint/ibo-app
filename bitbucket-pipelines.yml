@@ -79,6 +79,7 @@ definitions:
             helm template $APP_NAME $CHART_FOLDER \
               --set image.tag=$DOCKER_ENV_TAG \
               --set ingress.host=$K8S_INGRESS_HOST \
+              -f deployment/ui/values-$BITBUCKET_DEPLOYMENT_ENVIRONMENT.yaml \
               -f env-values.yaml \
               > manifests/$APP_NAME.yml
 
