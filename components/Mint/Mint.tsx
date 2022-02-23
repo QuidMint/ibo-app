@@ -88,14 +88,38 @@ const Mint: React.VFC = () => {
       console.log('t1: ', formatUnits(totalSupply, 24));
     });
 
-    contract?.totalSupply().then((totalSupply: BigNumber) => {
-      console.log('t2: ', formatUnits(totalSupply, 24));
-    });
+  useDebounce(
+    mintValue,
+    async () => {
+      if (parseInt(mintValue) > 0) {
+        const { usdt } = await getAmounts(mintValue);
+        setUsdtValue(parseFloat(formatUnits(usdt, 6)));
+      } else {
+        setUsdtValue(0);
+      }
+    },
+    500,
+  );
 
-    contract?.sale_start().then((saleStart: BigNumber) => {
-      const timestampMS = saleStart.toNumber() * 1000;
-      setAuctionStartTimestamp(timestampMS);
-    });
+  useEffect(() => {
+    let timerId: NodeJS.Timer;
+
+    if (contract) {
+      timerId = setInterval(() => {
+        Promise.all([
+          contract.get_total_supply_cap(),
+          contract.totalSupply(),
+        ]).then(([totalSupplyCap, totalSupply]) => {
+          console.log(
+            formatUnits(totalSupply, 24),
+            formatUnits(totalSupplyCap, 24),
+          );
+          setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
+          setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
+        });
+      }, 60000);
+    }
+    return () => timerId && clearInterval(timerId);
   }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
