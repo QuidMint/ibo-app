@@ -55,7 +55,7 @@ const Home: NextPage<HomeProps> = ({ transactions }) => {
             <div className={styles.mintContainer}>
               <Mint />
             </div>
-            <Table data={transactions?.documents.slice(0, 3)} />
+            <Table data={tableData.slice(0, 3)} />
           </div>
           <div className={styles.fakeCol} />
         </SwiperSlide>
@@ -63,7 +63,7 @@ const Home: NextPage<HomeProps> = ({ transactions }) => {
           <div className={styles.tableSlide}>
             <div className={styles.tableWrapper}>
               <h2 className={styles.tableSlideTitle}>Transactions</h2>
-              <Table rarefied data={transactions?.documents} />
+              <Table rarefied data={tableData} />
             </div>
           </div>
         </SwiperSlide>

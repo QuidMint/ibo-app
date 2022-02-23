@@ -18,8 +18,6 @@ import styles from './Mint.module.scss';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
 
-const MAX_VALUE = '45000.34';
-
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -141,8 +139,8 @@ const Mint: React.VFC = () => {
       originalValue = '0' + originalValue;
     }
 
-    if (Number(originalValue) > Number(MAX_VALUE)) {
-      originalValue = MAX_VALUE;
+    if (Number(originalValue) > Number(availableValue)) {
+      originalValue = availableValue;
     }
 
     if (regex.test(originalValue)) {
@@ -151,8 +149,8 @@ const Mint: React.VFC = () => {
   };
 
   const handleSetMaxValue = () => {
-    if (mintValue !== MAX_VALUE) {
-      setMintValue(MAX_VALUE);
+    if (mintValue !== availableValue) {
+      setMintValue(availableValue);
     }
 
     if (inputRef) {
@@ -203,7 +201,7 @@ const Mint: React.VFC = () => {
         <div className={styles.availability}>
           <span className={styles.availabilityTitle}>Available today</span>
           <span className={styles.availabilityCurrent}>
-            QD {numberWithCommas((totalSupplyCap - totalSupply).toFixed())}
+            QD {numberWithCommas(availableValue)}
           </span>
           <span className={styles.availabilityDivideSign}>/</span>
           <span className={styles.availabilityMax}>
