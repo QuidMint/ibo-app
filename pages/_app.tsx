@@ -12,12 +12,12 @@ import { getAccountInfo, getTransactions } from '../services';
 
 import '../styles/globals.css';
 
-bootstrap();
-
 const App = ({ Component, pageProps }: AppProps) => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [transactions, setTransactions] = useState<any>(null);
   const { selectedAccount, setConnector } = useWallet();
+
+  bootstrap(); // todo: quick fix
 
   useEffect(() => {
     if (window.ethereum) {
