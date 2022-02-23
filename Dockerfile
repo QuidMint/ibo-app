@@ -36,6 +36,7 @@ ENV NODE_ENV production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system -h /home/nextjs --uid 1001 nextjs
+ENV HOME=/home/nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.js ./
