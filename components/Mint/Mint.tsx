@@ -117,7 +117,10 @@ const Mint: React.VFC = () => {
           setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
           setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
         });
-      }, 60000);
+      };
+
+      timerId = setInterval(updateTotalSupply, 60000);
+      updateTotalSupply();
     }
     return () => timerId && clearInterval(timerId);
   }, [contract]);
