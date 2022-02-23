@@ -8,6 +8,7 @@ import {
 import { MetamaskConnector } from '../lib/connectors';
 import { useWallet } from '../hooks/use-wallet';
 import { getAccountInfo, getTransactions } from '../services';
+import { createQuidWather } from '../lib/watchers';
 
 import '../styles/globals.css';
 
@@ -23,15 +24,28 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [setConnector]);
 
   useEffect(() => {
-    getTransactions().then(setTransactions);
-  }, []);
+    const fetchData = () => {
+      getTransactions().then((response) =>
+        setTransactions({
+          ...response,
+          documents: response.documents.sort(
+            (a, b) => +b.value.timestamp - +a.value.timestamp,
+          ),
+        }),
+      );
 
-  useEffect(() => {
-    if (selectedAccount) {
-      getAccountInfo(selectedAccount).then(setUserInfo);
-    } else {
-      setUserInfo(null);
-    }
+      if (selectedAccount) {
+        getAccountInfo(selectedAccount).then(setUserInfo);
+      } else {
+        setUserInfo(null);
+      }
+    };
+
+    const watcher = createQuidWather();
+
+    watcher.on('Mint', fetchData);
+
+    fetchData();
   }, [selectedAccount]);
 
   return (

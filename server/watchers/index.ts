@@ -1,33 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ContractWatcher } from '../../lib/contracts/ContractWatcher';
-import contractJson from '../../lib/contracts/QD.json';
 import { databaseClient } from '../database';
 import { formatUnits } from '@ethersproject/units';
-import { webSocketProvider } from '../../lib/providers';
-
-type EventData = { blockHash: string; transactionHash: string };
-
-type WatcherMap = {
-  Mint: (
-    address: string,
-    costInUsd: BigNumber,
-    qdAmount: BigNumber,
-    data: EventData,
-  ) => void;
-};
-
-const createWather = () => {
-  return new ContractWatcher<WatcherMap>(
-    process.env.NEXT_PUBLIC_CONTRACT_ID!,
-    contractJson.abi,
-    webSocketProvider,
-  );
-};
+import { createQuidWather, EventData } from '../../lib/watchers';
 
 export async function runWatchers() {
   console.log('[ContactWatcher]: Start watching');
 
-  const watcher = createWather();
+  const watcher = createQuidWather();
 
   const handleMint = async (
     address: string,
