@@ -14,6 +14,7 @@ RUN npm ci
 FROM node:16-alpine AS builder
 ARG API_URL
 ENV NEXT_PUBLIC_API_URL=$API_URL
+ENV CI=true
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
