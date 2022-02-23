@@ -10,7 +10,9 @@ export const useContract = (contractId: string, abi: ContractInterface) => {
   const { provider, selectedAccount, chainId } = useWallet();
 
   return useMemo(() => {
-    let signerOrProvider = selectedAccount ? provider.getSigner() : provider;
+    let signerOrProvider: any = selectedAccount
+      ? provider?.getSigner()
+      : provider;
 
     if (chainId && parseInt(chainId, 16) !== network.chainId) {
       signerOrProvider = defaultProvider;
