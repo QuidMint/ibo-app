@@ -8,7 +8,11 @@ type GlobalType = typeof globalThis & {
 (global as GlobalType).isBootstrapped = false;
 
 export default async function bootstrap() {
-  if ((global as GlobalType).isBootstrapped || typeof window !== 'undefined')
+  if (
+    (global as GlobalType).isBootstrapped ||
+    typeof window !== 'undefined' ||
+    !!process.env.CI
+  )
     return;
   (global as GlobalType).isBootstrapped = true;
 
