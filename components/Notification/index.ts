@@ -1,3 +1,6 @@
 export { Notification } from './Notification';
 export { NotificationList } from './NotificationList';
-export { NotificationProvider } from './NotificationProvider';
+export {
+  NotificationProvider,
+  NotificationContext,
+} from './NotificationProvider';

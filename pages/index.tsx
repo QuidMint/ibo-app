@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -8,9 +8,12 @@ import { Summary } from '../components/Summary';
 import { Table } from '../components/Table';
 import { ScrollAssistant } from '../components/ScrollAssistant';
 import { PaginationResponse, Transaction } from '../types';
+import { getNetwork } from '@ethersproject/networks';
 
 import styles from '../styles/Home.module.scss';
 import 'swiper/swiper.min.css';
+import { useWallet } from '../hooks/use-wallet';
+import { NotificationContext } from '../components/Notification';
 
 type HomeProps = {
   transactions: PaginationResponse<Transaction>;
