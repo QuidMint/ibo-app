@@ -1,0 +1,11 @@
+{
+  "default": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "connectTimeout": 1000,
+    "db": 0,
+    "showFriendlyErrorStack": false,
+    "trackRedisInfo": false,
+    "maxConnectRetry": 5
+  }
+}

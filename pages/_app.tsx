@@ -1,5 +1,5 @@
 import type { AppProps } from 'next/app';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from '../components/Layout';
 import {
   NotificationList,
@@ -7,14 +7,17 @@ import {
 } from '../components/Notification';
 import { MetamaskConnector } from '../lib/connectors';
 import { useWallet } from '../hooks/use-wallet';
-import { init } from '../lib/startup';
+import bootstrap from '../lib/bootstrap';
+import { getAccountInfo, getTransactions } from '../services';
 
 import '../styles/globals.css';
 
-init();
+bootstrap();
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const { setConnector } = useWallet();
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [transactions, setTransactions] = useState<any>(null);
+  const { selectedAccount, setConnector } = useWallet();
 
   useEffect(() => {
     if (window.ethereum) {
@@ -22,11 +25,23 @@ const App = ({ Component, pageProps }: AppProps) => {
     }
   }, [setConnector]);
 
+  useEffect(() => {
+    getTransactions().then(setTransactions);
+  }, []);
+
+  useEffect(() => {
+    if (selectedAccount) {
+      getAccountInfo(selectedAccount).then(setUserInfo);
+    } else {
+      setUserInfo(null);
+    }
+  }, [selectedAccount]);
+
   return (
     <NotificationProvider>
       <NotificationList />
-      <Layout>
-        <Component {...pageProps} />
+      <Layout userInfo={userInfo}>
+        <Component transactions={transactions} {...pageProps} />
       </Layout>
     </NotificationProvider>
   );

@@ -1,6 +1,7 @@
 @use 'styles/variables';
 
 .root {
+  overflow: hidden;
   width: 270px;
   min-height: 45px;
   border-radius: 8px;

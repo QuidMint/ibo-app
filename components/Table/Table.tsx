@@ -1,21 +1,16 @@
 import React from 'react';
 import cx from 'classnames';
 import shortedHash from '../../utils/shorted-hash';
+import { Transaction } from '../../types';
 
 import styles from './Table.module.scss';
+import { formatDate, formatTime } from '../../utils/format-date';
+import { numberWithCommas } from '../../utils/number-with-commas';
 
 export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   className?: string;
   rarefied?: boolean;
-  data: {
-    id: string;
-    date: string;
-    time: string;
-    address: string;
-    qd: string;
-    usdt: string;
-    gain: string;
-  }[];
+  data: { id: string; value: Transaction }[];
 }
 
 const Table: React.VFC<TableProps> = ({
@@ -24,7 +19,7 @@ const Table: React.VFC<TableProps> = ({
   rarefied = false,
   ...other
 }) => {
-  if (!data.length) {
+  if (!data || !data.length) {
     return null;
   }
 
@@ -43,18 +38,29 @@ const Table: React.VFC<TableProps> = ({
         </tr>
       </thead>
       <tbody className={styles.body}>
-        {data.map((tr: any) => (
-          <tr key={tr.id}>
-            <td>
-              {tr.date}
-              <time>{tr.time}</time>
-            </td>
-            <td>{shortedHash(tr.address)}</td>
-            <td className={styles.right}>{tr.qd}</td>
-            <td className={styles.right}>{tr.usdt}</td>
-            <td className={styles.right}>{tr.gain}</td>
-          </tr>
-        ))}
+        {data.map((item) => {
+          const row = item.value;
+          return (
+            <tr key={item.id}>
+              <td>
+                {formatDate(row.timestamp)}
+                <time>{formatTime(row.timestamp)}</time>
+              </td>
+              <td>{shortedHash(row.address)}</td>
+              <td className={styles.right}>
+                {numberWithCommas(parseInt(row.qdAmount))}
+              </td>
+              <td className={styles.right}>
+                {numberWithCommas(parseInt(row.costInUsd))}
+              </td>
+              <td className={styles.right}>
+                {numberWithCommas(
+                  (Number(row.qdAmount) - Number(row.costInUsd)).toFixed(),
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

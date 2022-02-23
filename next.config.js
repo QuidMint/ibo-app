@@ -5,7 +5,15 @@ const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const nextConfig = {
   reactStrictMode: true,
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback.fs = false;
+      config.resolve.fallback.dns = false;
+      config.resolve.fallback.net = false;
+      config.resolve.fallback.tls = false;
+      config.resolve.fallback.readline = false;
+    }
+
     config.module.rules.push({
       test: /\.svg$/i,
       include: path.join(process.cwd(), 'icons'),

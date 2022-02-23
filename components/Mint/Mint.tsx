@@ -6,13 +6,17 @@ import {
   useState,
   useRef,
 } from 'react';
-import { formatUnits } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import { useQuidContract } from '../../hooks/use-quid-contract';
 import { useWallet } from '../../hooks/use-wallet';
 import { NotificationContext } from '../Notification/NotificationProvider';
 import { Icon } from '../Lib/Icon';
+import { useUsdtContract } from '../../hooks/use-usdt-contract';
 
 import styles from './Mint.module.scss';
+import { useDebounce } from '../../hooks/use-debounce';
+import { numberWithCommas } from '../../utils/number-with-commas';
 
 const MAX_VALUE = '45000.34';
 
@@ -21,22 +25,60 @@ const Mint: React.VFC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { notify } = useContext(NotificationContext);
   const contract = useQuidContract();
-  const { selectedAccount, provider, connect } = useWallet();
+  const usdtContract = useUsdtContract();
+  const { selectedAccount } = useWallet();
+  const [usdtValue, setUsdtValue] = useState(0);
+  const [totalSupplyCap, setTotalSupplyCap] = useState(0);
+  const [totalSupply, setTotalSupply] = useState(0);
+
+  const getAmounts = async (
+    mintValue: string,
+  ): Promise<{ qd: BigNumber; usdt: BigNumber }> => {
+    const currentTimestamp = (Date.now() / 1000).toFixed(0);
+    const qdAmount = parseUnits(mintValue, 24);
+    const usdtAmount: BigNumber = await contract?.qd_amt_to_usdt_amt(
+      qdAmount,
+      currentTimestamp,
+    );
+
+    return { qd: qdAmount, usdt: usdtAmount };
+  };
+
+  useDebounce(
+    mintValue,
+    async () => {
+      if (parseInt(mintValue) > 0) {
+        const { usdt } = await getAmounts(mintValue);
+        setUsdtValue(parseFloat(formatUnits(usdt, 6)));
+      } else {
+        setUsdtValue(0);
+      }
+    },
+    500,
+  );
 
   useEffect(() => {
-    const fetch = async () => {
-      if (!contract) return;
+    let timerId: NodeJS.Timer;
 
-      const result = await contract.get_total_supply_cap();
-      const result1 = await contract.qd_amount_to_usdt_amount(
-        result,
-        1645369111,
-      );
+    if (contract) {
+      const updateTotalSupply = () => {
+        Promise.all([
+          contract.get_total_supply_cap(),
+          contract.totalSupply(),
+        ]).then(([totalSupplyCap, totalSupply]) => {
+          console.log(
+            formatUnits(totalSupply, 24),
+            formatUnits(totalSupplyCap, 24),
+          );
+          setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
+          setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
+        });
+      };
 
-      console.log('get_total_supply_cap: ', formatUnits(result1, 18));
-    };
-
-    fetch();
+      timerId = setInterval(updateTotalSupply, 60000);
+      updateTotalSupply();
+    }
+    return () => timerId && clearInterval(timerId);
   }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +119,10 @@ const Mint: React.VFC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    if (!mintValue.length) {
+      return;
+    }
+
     if (!selectedAccount) {
       notify({
         severity: 'error',
@@ -86,7 +132,18 @@ const Mint: React.VFC = () => {
     }
 
     try {
-      await contract?.mint(mintValue);
+      const { qd, usdt } = await getAmounts(mintValue);
+      await usdtContract?.approve(
+        contract?.address,
+        usdt.add(parseUnits('200', 6)),
+      );
+      await contract?.mint(qd);
+
+      setMintValue('');
+      notify({
+        severity: 'success',
+        message: 'You have successfuly minted!',
+      });
     } catch (err) {
       notify({
         severity: 'error',
@@ -101,13 +158,17 @@ const Mint: React.VFC = () => {
       <div>
         <div className={styles.availability}>
           <span className={styles.availabilityTitle}>Available today</span>
-          <span className={styles.availabilityCurrent}>$45,000.34</span>
+          <span className={styles.availabilityCurrent}>
+            QD {numberWithCommas((totalSupplyCap - totalSupply).toFixed())}
+          </span>
           <span className={styles.availabilityDivideSign}>/</span>
-          <span className={styles.availabilityMax}>$514,000.00</span>
+          <span className={styles.availabilityMax}>
+            QD {numberWithCommas(totalSupplyCap.toFixed())}
+          </span>
         </div>
         <div className={styles.inputContainer}>
           <label htmlFor="mint-input" className={styles.dollarSign}>
-            $
+            QD
           </label>
           <input
             type="text"
@@ -115,10 +176,14 @@ const Mint: React.VFC = () => {
             className={styles.input}
             value={mintValue}
             onChange={handleChangeValue}
-            placeholder="Deposit amount"
+            placeholder="Mint amount"
             ref={inputRef}
           />
-          <button className={styles.maxButton} onClick={handleSetMaxValue}>
+          <button
+            className={styles.maxButton}
+            onClick={handleSetMaxValue}
+            type="button"
+          >
             Max
             <Icon
               preserveAspectRatio="none"
@@ -129,11 +194,17 @@ const Mint: React.VFC = () => {
         </div>
         <div className={styles.sub}>
           <div className={styles.subLeft}>
-            QD
-            <strong>345</strong>
+            $
+            <strong>
+              {usdtValue === 0
+                ? 'USDT Amount'
+                : numberWithCommas(usdtValue.toFixed())}
+            </strong>
           </div>
           <div className={styles.subRight}>
-            <strong>$34,456</strong>
+            <strong>
+              ${numberWithCommas((+mintValue - usdtValue).toFixed())}
+            </strong>
             Projected gains
           </div>
         </div>

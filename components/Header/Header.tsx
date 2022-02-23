@@ -4,20 +4,39 @@ import shortedHash from '../../utils/shorted-hash';
 import { Icon } from '../Lib/Icon';
 import { useWallet } from '../../hooks/use-wallet';
 import styles from './Header.module.scss';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ProviderRpcError } from '../../lib/connectors/core/types';
 import { NotificationContext } from '../Notification/NotificationProvider';
+import { UserInfoResponse } from '../../types';
+import { useUsdtContract } from '../../hooks/use-usdt-contract';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
+import { numberWithCommas } from '../../utils/number-with-commas';
 
-const Header: React.VFC = () => {
+type HeaderProps = {
+  userInfo: UserInfoResponse;
+};
+
+const Header: React.VFC<HeaderProps> = ({ userInfo }) => {
   const { notify } = useContext(NotificationContext);
   const { selectedAccount, connect } = useWallet();
+  const usdtContract = useUsdtContract();
+  const [balance, setBalance] = useState('');
+
+  useEffect(() => {
+    if (selectedAccount) {
+      usdtContract?.balanceOf(selectedAccount).then((data: BigNumber) => {
+        setBalance(formatUnits(data, 6));
+      });
+    }
+  }, [usdtContract, selectedAccount]);
 
   const handleWalletConnect = async () => {
     try {
       await connect();
       notify({
         severity: 'success',
-        message: 'Your wallet successfuly connected',
+        message: 'Your wallet successfully connected',
         autoHideDuration: 5000,
       });
     } catch (err) {
@@ -29,6 +48,36 @@ const Header: React.VFC = () => {
     }
   };
 
+  const summary = (
+    <div className={styles.summary}>
+      <div className={styles.summaryEl}>
+        <div className={styles.summaryElTitle}>Deposited</div>
+        <div className={styles.summaryElValue}>${userInfo?.costInUsd}</div>
+      </div>
+      <div className={styles.summaryEl}>
+        <div className={styles.summaryElTitle}>My Future QD</div>
+        <div className={styles.summaryElValue}>{userInfo?.qdAmount}</div>
+      </div>
+      <div className={styles.summaryEl}>
+        <div className={styles.summaryElTitle}>Gains</div>
+        <div className={styles.summaryElValue}>
+          {userInfo?.qdAmount &&
+            userInfo?.costInUsd &&
+            `$${Number(userInfo?.qdAmount) - Number(userInfo?.costInUsd)}`}
+        </div>
+      </div>
+    </div>
+  );
+
+  const balanceBlock = (
+    <div className={styles.summaryEl}>
+      <div className={styles.summaryElTitle}>USDT balance</div>
+      <div className={styles.summaryElValue}>
+        ${numberWithCommas(parseInt(balance))}
+      </div>
+    </div>
+  );
+
   return (
     <header className={styles.root}>
       <div className={styles.logoContainer}>
@@ -36,25 +85,9 @@ const Header: React.VFC = () => {
           <a className={styles.logo} />
         </Link>
       </div>
-      {/* <div className={styles.summary}>
-        <div className={styles.summaryEl}>
-          <div className={styles.summaryElTitle}>Deposited</div>
-          <div className={styles.summaryElValue}>$20,000</div>
-        </div>
-        <div className={styles.summaryEl}>
-          <div className={styles.summaryElTitle}>My Future QD</div>
-          <div className={styles.summaryElValue}>$20,000</div>
-        </div>
-        <div className={styles.summaryEl}>
-          <div className={styles.summaryElTitle}>Gains</div>
-          <div className={styles.summaryElValue}>$452,571</div>
-        </div>
-      </div> */}
+      {userInfo && summary}
       <div className={styles.walletContainer}>
-        {/* <div className={styles.summaryEl}>
-          <div className={styles.summaryElTitle}>USDT balance</div>
-          <div className={styles.summaryElValue}>$452,571</div>
-        </div> */}
+        {userInfo && balanceBlock}
         {selectedAccount ? (
           <div className={styles.wallet}>
             <div className={styles.metamaskIcon}>

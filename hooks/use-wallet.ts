@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { useCallback, useEffect, useState } from 'react';
 import { AbstractConnector } from '../lib/connectors';
 import {
@@ -6,6 +7,7 @@ import {
 } from '../lib/connectors/core/types';
 
 let currentConnector: AbstractConnector | null = null;
+let provider: Web3Provider | null = null;
 
 type WalletState = {
   isActivating: boolean;
@@ -90,8 +92,11 @@ export const useWallet = () => {
 
   const setNewConnector = useCallback(
     (connector: AbstractConnector) => {
-      updateState({ connector });
+      updateState({
+        connector,
+      });
       currentConnector = connector;
+      provider = new Web3Provider(connector.provider);
     },
     [updateState],
   );
@@ -99,7 +104,7 @@ export const useWallet = () => {
   return {
     ...state,
     selectedAccount: state.accounts[0] || null,
-    provider: connector?.provider || null,
+    provider,
     connect,
     setConnector: setNewConnector,
   };
