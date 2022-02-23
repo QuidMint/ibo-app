@@ -24,6 +24,7 @@ const nextConfig = {
             extract: true,
             outputPath: 'static/',
             publicPath: 'static/',
+            esModule: false,
           },
         },
       ],
