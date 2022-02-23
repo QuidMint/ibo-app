@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -30,7 +30,8 @@ const Home: NextPage<HomeProps> = ({ transactions }) => {
     getAccountInfo().then(setAccountInfo);
   }, []);
 
-  console.log({ transactions, accountInfo });
+const Home: NextPage<HomeProps> = ({ transactions }) => {
+  const [swiperRef, setSwiperRef] = useState<SwiperType | null>(null);
 
   return (
     <div className={styles.root}>
