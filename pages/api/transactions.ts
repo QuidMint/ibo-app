@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-// import { databaseClient } from '../../lib/database';
-// import { PaginationResponse, Transaction } from '../../types';
+import { databaseClient } from '../../lib/database';
+import { PaginationResponse, Transaction } from '../../types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,18 +12,15 @@ export default async function handler(
   };
 
   try {
-    // await databaseClient.connect();
-    // const response: PaginationResponse<Transaction> =
-    //   (await databaseClient.findAll('idx1:transactions', '*', {
-    //     LIMIT: {
-    //       from: offset,
-    //       size: limit,
-    //     },
-    //   })) as unknown as PaginationResponse<Transaction>;
-    res.status(200).json({
-      total: 0,
-      documents: [],
-    });
+    await databaseClient.connect();
+    const response: PaginationResponse<Transaction> =
+      (await databaseClient.findAll('idx1:transactions', '*', {
+        LIMIT: {
+          from: offset,
+          size: limit,
+        },
+      })) as unknown as PaginationResponse<Transaction>;
+    res.status(200).json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Somethings went wrong!' });
