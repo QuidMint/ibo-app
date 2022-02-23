@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import cx from 'classnames';
-import { Swiper as SwiperType } from 'swiper/types';
 
 import { Icon } from '../Lib/Icon';
 
@@ -8,7 +7,7 @@ import styles from './ScrollAssistant.module.scss';
 
 type ScrollAssistantProps = {
   className?: string;
-  swiper: SwiperType | null;
+  swiper: any | null;
 };
 
 const ScrollAssistant: React.VFC<ScrollAssistantProps> = ({

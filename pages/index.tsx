@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Swiper as SwiperType } from 'swiper/types';
 
 import { Mint } from '../components/Mint';
 import { Summary } from '../components/Summary';
@@ -11,7 +10,7 @@ import { ScrollAssistant } from '../components/ScrollAssistant';
 import { PaginationResponse, Transaction } from '../types';
 
 import styles from '../styles/Home.module.scss';
-import 'swiper/css';
+import 'swiper/swiper.min.css';
 
 type HomeProps = {
   transactions: PaginationResponse<Transaction>;

@@ -3,18 +3,16 @@ import { WebSocketProvider } from '@ethersproject/providers';
 import { MapEvents } from '../../types';
 
 export class ContractWatcher<T extends MapEvents> {
-  private readonly contract: Contract;
+  public readonly contract: Contract;
+  public readonly provider: WebSocketProvider;
 
   constructor(
     address: string,
     abi: ContractInterface,
     webSocketProvider: WebSocketProvider,
   ) {
+    this.provider = webSocketProvider;
     this.contract = new Contract(address, abi, webSocketProvider);
-  }
-
-  getContract(): Contract {
-    return this.contract;
   }
 
   on<E extends keyof T>(event: E, listener: T[E]): this {
