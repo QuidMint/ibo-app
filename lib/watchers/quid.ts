@@ -57,6 +57,6 @@ export async function run() {
     }
   };
 
-  console.log('[QuidWatcher]: subctive to mint event');
+  console.log('[QuidWatcher]: subscribe to mint event');
   quidWatcher.on('Mint', handleMint);
 }

@@ -16,7 +16,7 @@ export default async function bootstrap() {
     return;
   (global as GlobalType).isBootstrapped = true;
 
-  console.log('Bootstraping');
+  console.log('[Bootstrap]: Server is running');
 
   await databaseClient.connect();
   await databaseClient.createIndexes([

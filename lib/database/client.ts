@@ -30,7 +30,7 @@ class DatabaseClient {
       await Promise.all(promises);
     } catch (e: any) {
       if (e.message === 'Index already exists') {
-        console.log('Index exists already, skipped creation.');
+        console.log('[Database]: Index exists already, skipped creation.');
       } else {
         // Something went wrong, perhaps RediSearch isn't installed...
         console.error(e);
