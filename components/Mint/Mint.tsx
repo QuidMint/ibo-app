@@ -82,8 +82,18 @@ const Mint: React.VFC = () => {
   }, [contract]);
 
   useEffect(() => {
-    contract?.auction_start().then((auctionStart: BigNumber) => {
-      const timestampMS = auctionStart.toNumber() * 1000;
+    console.log(contract);
+
+    contract?.get_total_supply_cap().then((totalSupply: BigNumber) => {
+      console.log('t1: ', formatUnits(totalSupply, 24));
+    });
+
+    contract?.totalSupply().then((totalSupply: BigNumber) => {
+      console.log('t2: ', formatUnits(totalSupply, 24));
+    });
+
+    contract?.sale_start().then((saleStart: BigNumber) => {
+      const timestampMS = saleStart.toNumber() * 1000;
       setAuctionStartTimestamp(timestampMS);
     });
   }, [contract]);
