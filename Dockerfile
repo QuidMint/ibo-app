@@ -35,7 +35,7 @@ ENV NODE_ENV production
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN adduser --system -h /home/nextjs --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
 COPY --from=builder /app/next.config.js ./
