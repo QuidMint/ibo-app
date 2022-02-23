@@ -28,7 +28,6 @@ export default async function handler(
       qdAmount += parseFloat(item.value.qdAmount);
     });
 
-    await databaseClient.close();
     res.status(200).json({ address, costInUsd, qdAmount });
   } catch (err) {
     console.error(err);

@@ -29,7 +29,6 @@ export default async function handler(
       depositedToday += parseFloat(item.value.costInUsd);
     });
 
-    await databaseClient.close();
     res.status(200).json({ depositedToday });
   } catch (err) {
     console.error(err);

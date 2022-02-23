@@ -20,8 +20,6 @@ export default async function handler(
           size: limit,
         },
       })) as unknown as PaginationResponse<Transaction>;
-
-    await databaseClient.close();
     res.status(200).json(response);
   } catch (err) {
     console.error(err);

@@ -10,11 +10,15 @@ class DatabaseClient {
   }
 
   async connect() {
-    return this.client.connect();
+    if (!this.client.isOpen) {
+      return this.client.connect();
+    }
   }
 
   async close() {
-    return this.client.quit();
+    if (this.client.isOpen) {
+      return this.client.disconnect();
+    }
   }
 
   async createIndexes(indexes: any[]) {
