@@ -30,6 +30,12 @@ export async function run() {
     { blockHash, transactionHash }: EventData,
   ) => {
     try {
+      console.log(
+        `[Contact Event]: mint - ${address} ${formatUnits(
+          costInUsd,
+          6,
+        )} ${formatUnits(qdAmount, 24)}`,
+      );
       const block = await webSocketProvider.getBlock(blockHash);
 
       const result = await databaseClient.save(
