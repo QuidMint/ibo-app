@@ -56,7 +56,7 @@ const Summary: React.VFC = () => {
     <div className={styles.root}>
       <div className={styles.section}>
         <div className={styles.title}>Days left</div>
-        {/* <div className={styles.value}>{daysLeft}</div> */}
+        <div className={styles.value}>{daysLeft}</div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Current price</div>
