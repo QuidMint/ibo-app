@@ -6,7 +6,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json ./ 
-RUN npm i -g npm@latest
+#RUN npm i -g npm@latest
 RUN npm install next@canary
 RUN npm ci
 
