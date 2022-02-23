@@ -32,5 +32,6 @@ export default async function handler(
     res.status(200).json({ address, costInUsd, qdAmount });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: 'Somethings went wrong!' });
   }
 }

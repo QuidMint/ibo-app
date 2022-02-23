@@ -4,7 +4,7 @@ import { PaginationResponse, Transaction } from '../../types';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PaginationResponse<Transaction>>,
+  res: NextApiResponse<any>,
 ) {
   const { limit = 50, offset = 0 } = req.query as any as {
     limit: number;
@@ -25,5 +25,6 @@ export default async function handler(
     res.status(200).json(response);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: 'Somethings went wrong!' });
   }
 }
