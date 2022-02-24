@@ -17,6 +17,14 @@ import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import styles from './Mint.module.scss';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
+import { withRetryHandling } from '../../utils/wrap-with-retry-handling';
+
+const waitTransaction = withRetryHandling(
+  async (callback: () => Promise<void>) => {
+    await callback();
+  },
+  { baseDelay: 2000, numberOfTries: 30 },
+);
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
@@ -28,6 +36,7 @@ const Mint: React.VFC = () => {
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
+  const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
 
   const getAmounts = async (
     mintValue: string,
@@ -64,10 +73,6 @@ const Mint: React.VFC = () => {
           contract.get_total_supply_cap(),
           contract.totalSupply(),
         ]).then(([totalSupplyCap, totalSupply]) => {
-          console.log(
-            formatUnits(totalSupply, 24),
-            formatUnits(totalSupplyCap, 24),
-          );
           setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
           setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
         });
@@ -162,6 +167,10 @@ const Mint: React.VFC = () => {
     e.preventDefault();
 
     if (!mintValue.length) {
+      notify({
+        severity: 'error',
+        message: 'Please enter amount',
+      });
       return;
     }
 
@@ -175,23 +184,46 @@ const Mint: React.VFC = () => {
 
     try {
       const { qd, usdt } = await getAmounts(mintValue);
-      await usdtContract?.approve(
+      setState('approving');
+
+      const { hash } = await usdtContract?.approve(
         contract?.address,
         usdt.add(parseUnits('200', 6)),
       );
+
+      notify({
+        severity: 'success',
+        message: 'Please wait for approving',
+        autoHideDuration: 4500,
+      });
+
+      await waitTransaction(async () => {
+        const receipt = await contract.provider.getTransactionReceipt(hash);
+        console.log('receipt');
+
+        if (!receipt) {
+          throw new Error(`Transaction is not complited!`);
+        }
+      });
+
+      setState('minting');
+
       await contract?.mint(qd);
 
-      setMintValue('');
       notify({
         severity: 'success',
         message: 'You have successfuly minted!',
       });
     } catch (err) {
+      console.dir(err);
       notify({
         severity: 'error',
         message: (err as Error).message,
         autoHideDuration: 3200,
       });
+    } finally {
+      setState('none');
+      setMintValue('');
     }
   };
 
@@ -251,8 +283,12 @@ const Mint: React.VFC = () => {
           </div>
         </div>
       </div>
-      <button type="submit" className={styles.submit}>
-        Mint
+      <button
+        type="submit"
+        className={styles.submit}
+        disabled={state !== 'none'}
+      >
+        {state !== 'none' ? `...${state}` : 'Mint'}
         <Icon
           preserveAspectRatio="none"
           className={styles.submitBtnL1}
