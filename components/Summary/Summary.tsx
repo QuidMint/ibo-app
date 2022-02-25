@@ -18,7 +18,7 @@ const Summary: React.VFC = () => {
   const [price, setPrice] = useState<string>(' ');
 
   useEffect(() => {
-    contract?.sale_LENGTH().then((data: any) => {
+    contract?.SALE_LENGTH().then((data: any) => {
       setMintPeriodDays(String(data.toNumber() / SECONDS_IN_DAY));
     });
 
@@ -33,13 +33,20 @@ const Summary: React.VFC = () => {
         setPrice(String(Number(formatUnits(data, 6)) * 100));
       });
 
-    contract?.get_total_supply_cap().then((totalSupplyCap: BigNumber) => {
-      setTotalDeposited(formatUnits(totalSupplyCap, 24).split('.')[0]);
-    });
-
     contract?.totalSupply().then((totalSupply: BigNumber) => {
       setTotalMinted(formatUnits(totalSupply, 24).split('.')[0]);
     });
+
+    const fetchTotalSupplyCap = () =>
+      contract?.get_total_supply_cap().then((totalSupplyCap: BigNumber) => {
+        setTotalDeposited(formatUnits(totalSupplyCap, 24).split('.')[0]);
+      });
+
+    fetchTotalSupplyCap();
+
+    const timerId = setInterval(fetchTotalSupplyCap, 5000);
+
+    return () => clearInterval(timerId);
   }, [contract]);
 
   const daysLeft = smartContractStartTimestamp ? (
