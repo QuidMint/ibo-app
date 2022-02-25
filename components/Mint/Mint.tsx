@@ -27,7 +27,7 @@ const waitTransaction = withRetryHandling(
   { baseDelay: 2000, numberOfTries: 30 },
 );
 
-const DELAY = 60 * 60 * 1;
+const DELAY = 60 * 60 * 4;
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
@@ -150,12 +150,23 @@ const Mint: React.VFC = () => {
       const qdAmount = parseUnits(mintValue, 24);
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 
-      if ((window as any).approval) {
+      const allowanceBigNumber: BigNumber = await usdtContract.allowance(
+        selectedAccount,
+        quidContract.address,
+      );
+
+      console.log(
+        'allowance: ',
+        formatUnits(allowanceBigNumber, 6),
+        formatUnits(usdtAmount, 6),
+      );
+
+      if (usdtAmount.gt(allowanceBigNumber)) {
         setState('approving');
 
-        const { hash } = await usdtContract?.approve(
+        const { hash } = await usdtContract?.increaseAllowance(
           quidContract?.address,
-          usdtAmount.add(parseUnits('10000', 6)),
+          usdtAmount,
         );
 
         notify({
@@ -175,19 +186,14 @@ const Mint: React.VFC = () => {
         });
       }
 
-      const allowance = await quidContract.allowance(
-        selectedAccount,
-        quidContract.address,
-      );
-
-      console.log('allowance: ', formatUnits(allowance, 6));
-
       setState('minting');
 
       notify({
         severity: 'success',
         message: 'Please check your wallet',
       });
+
+      console.log('mint: ', qdAmount, selectedAccount);
 
       await quidContract?.mint(qdAmount, selectedAccount);
 
