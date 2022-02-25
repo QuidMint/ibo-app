@@ -16,16 +16,9 @@ import { Icon } from '../Lib/Icon';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
-import { withRetryHandling } from '../../utils/wrap-with-retry-handling';
 
 import styles from './Mint.module.scss';
-
-const waitTransaction = withRetryHandling(
-  async (callback: () => Promise<void>) => {
-    await callback();
-  },
-  { baseDelay: 2000, numberOfTries: 30 },
-);
+import { waitTransaction } from '../../lib/contracts';
 
 const DELAY = 60 * 60 * 4;
 
@@ -167,6 +160,10 @@ const Mint: React.VFC = () => {
         const { hash } = await usdtContract?.increaseAllowance(
           quidContract?.address,
           usdtAmount,
+          {
+            gasPrice: parseUnits('100', 'gwei'),
+            gasLimit: 1000000,
+          },
         );
 
         notify({
@@ -175,15 +172,7 @@ const Mint: React.VFC = () => {
           autoHideDuration: 4500,
         });
 
-        await waitTransaction(async () => {
-          const receipt = await quidContract.provider.getTransactionReceipt(
-            hash,
-          );
-
-          if (!receipt) {
-            throw new Error(`Transaction is not complited!`);
-          }
-        });
+        await waitTransaction(hash);
       }
 
       setState('minting');
@@ -202,6 +191,8 @@ const Mint: React.VFC = () => {
         message: 'Your minting is pending!',
       });
     } catch (err: any) {
+      console.error(err);
+
       notify({
         severity: 'error',
         message: err.error?.message || err.message,
