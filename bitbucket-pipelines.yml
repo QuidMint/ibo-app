@@ -45,7 +45,7 @@ definitions:
             --build-arg API_URL=$API_URL
             --build-arg USDT_CONTRACT_ID=$USDT_CONTRACT_ID
             --build-arg CONTRACT_ID=$CONTRACT_ID
-            --build-arg INFURA_RPC=$INFURA_RPC
+            --build-arg INFURA_KEY=$INFURA_KEY
             --build-arg NETWOKR=$NETWOKR
             -t quid-${APP_NAME}:latest
             -t quid-${APP_NAME}:develop-latest
