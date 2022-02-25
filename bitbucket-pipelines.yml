@@ -42,8 +42,8 @@ definitions:
             fi
           - &docker-build >-
             docker build
-            --build-arg API_URl=$API_URL
-            --build-arg CONTRACT_ID_USDT=$CONTRACT_ID_USDT
+            --build-arg API_URL=$API_URL
+            --build-arg USDT_CONTRACT_ID=$USDT_CONTRACT_ID
             --build-arg CONTRACT_ID=$CONTRACT_ID
             --build-arg INFURA_RPC=$INFURA_RPC
             --build-arg NETWOKR=$NETWOKR
