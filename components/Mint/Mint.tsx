@@ -6,6 +6,7 @@ import {
   useState,
   useRef,
 } from 'react';
+import cn from 'classnames';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { useQuidContract } from '../../hooks/use-quid-contract';
@@ -13,11 +14,11 @@ import { useWallet } from '../../hooks/use-wallet';
 import { NotificationContext } from '../Notification/NotificationProvider';
 import { Icon } from '../Lib/Icon';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
-
-import styles from './Mint.module.scss';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
 import { withRetryHandling } from '../../utils/wrap-with-retry-handling';
+
+import styles from './Mint.module.scss';
 
 const waitTransaction = withRetryHandling(
   async (callback: () => Promise<void>) => {
@@ -30,7 +31,7 @@ const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { notify } = useContext(NotificationContext);
-  const contract = useQuidContract();
+  const quidContract = useQuidContract();
   const usdtContract = useUsdtContract();
   const { selectedAccount } = useWallet();
   const [usdtValue, setUsdtValue] = useState(0);
@@ -43,7 +44,7 @@ const Mint: React.VFC = () => {
   ): Promise<{ qd: BigNumber; usdt: BigNumber }> => {
     const currentTimestamp = (Date.now() / 1000).toFixed(0);
     const qdAmount = parseUnits(mintValue, 24);
-    const usdtAmount: BigNumber = await contract?.qd_amt_to_usdt_amt(
+    const usdtAmount: BigNumber = await quidContract?.qd_amt_to_usdt_amt(
       qdAmount,
       currentTimestamp,
     );
@@ -65,24 +66,26 @@ const Mint: React.VFC = () => {
   );
 
   useEffect(() => {
-    let timerId: NodeJS.Timer;
+    const updateTotalSupply = () => {
+      Promise.all([
+        quidContract.get_total_supply_cap(),
+        quidContract.totalSupply(),
+      ]).then(([totalSupplyCap, totalSupply]) => {
+        setTotalSupply(formatUnits(totalSupply, 24));
+        setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
+      });
+    };
 
-    if (contract) {
-      const updateTotalSupply = () => {
-        Promise.all([
-          contract.get_total_supply_cap(),
-          contract.totalSupply(),
-        ]).then(([totalSupplyCap, totalSupply]) => {
-          setTotalSupply(formatUnits(totalSupply, 24));
-          setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
-        });
-      };
-
-      timerId = setInterval(updateTotalSupply, 60000);
+    if (quidContract) {
       updateTotalSupply();
     }
-    return () => timerId && clearInterval(timerId);
-  }, [contract]);
+
+    quidContract?.on('Mint', updateTotalSupply);
+
+    return () => {
+      quidContract?.removeListener('Mint', updateTotalSupply);
+    };
+  }, [quidContract]);
 
   useDebounce(
     mintValue,
@@ -123,6 +126,15 @@ const Mint: React.VFC = () => {
   };
 
   const handleSetMaxValue = () => {
+    if (!selectedAccount) {
+      notify({
+        message: 'Please connect your wallet',
+        severity: 'error',
+      });
+
+      return;
+    }
+
     if (mintValue !== availableValue) {
       setMintValue(availableValue);
     }
@@ -153,12 +165,10 @@ const Mint: React.VFC = () => {
 
     try {
       const { qd, usdt } = await getAmounts(mintValue);
+
       setState('approving');
 
-      const { hash } = await usdtContract?.approve(
-        contract?.address,
-        usdt.add(parseUnits('200', 6)),
-      );
+      const { hash } = await usdtContract?.approve(quidContract?.address, usdt);
 
       notify({
         severity: 'success',
@@ -167,8 +177,7 @@ const Mint: React.VFC = () => {
       });
 
       await waitTransaction(async () => {
-        const receipt = await contract.provider.getTransactionReceipt(hash);
-        console.log('receipt');
+        const receipt = await quidContract.provider.getTransactionReceipt(hash);
 
         if (!receipt) {
           throw new Error(`Transaction is not complited!`);
@@ -177,11 +186,20 @@ const Mint: React.VFC = () => {
 
       setState('minting');
 
-      await contract?.mint(qd, selectedAccount);
+      notify({
+        severity: 'success',
+        message: 'Please check your wallet',
+      });
+
+      if (process.env.NEXT_PUBLIC_NETWOKR === 'ropsten') {
+        await quidContract?.mint(qd); // because of old version
+      } else {
+        await quidContract?.mint(qd, selectedAccount);
+      }
 
       notify({
         severity: 'success',
-        message: 'You have successfuly minted!',
+        message: 'Your minting is pending!',
       });
     } catch (err) {
       console.dir(err);
@@ -254,7 +272,7 @@ const Mint: React.VFC = () => {
       </div>
       <button
         type="submit"
-        className={styles.submit}
+        className={cn(styles.submit, styles[state])}
         disabled={state !== 'none'}
       >
         {state !== 'none' ? `...${state}` : 'Mint'}

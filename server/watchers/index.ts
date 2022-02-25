@@ -1,12 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { databaseClient } from '../database';
 import { formatUnits } from '@ethersproject/units';
-import { createQuidWather, EventData } from '../../lib/watchers';
+import { createQuidContract } from '../../lib/contracts';
+import { EventData } from '../../lib/contracts/types';
 
 export async function runWatchers() {
   console.log('[ContactWatcher]: Start watching');
 
-  const watcher = createQuidWather();
+  const watcher = createQuidContract();
 
   const handleMint = async (
     address: string,

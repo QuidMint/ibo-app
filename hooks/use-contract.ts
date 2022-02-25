@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { useWallet } from './use-wallet';
-import { getNetwork, InfuraProvider } from '@ethersproject/providers';
+import { getNetwork } from '@ethersproject/providers';
+import { defaultProvider } from '../lib/contracts';
 
 const network = getNetwork(process.env.NEXT_PUBLIC_NETWOKR || 'ropsten');
-const defaultProvider = new InfuraProvider(network.name);
 
 export const useContract = (contractId: string, abi: ContractInterface) => {
   const { provider, selectedAccount, chainId } = useWallet();

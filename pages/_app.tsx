@@ -8,7 +8,7 @@ import {
 import { MetamaskConnector } from '../lib/connectors';
 import { useWallet } from '../hooks/use-wallet';
 import { getAccountInfo, getTransactions } from '../services';
-import { createQuidWather } from '../lib/watchers';
+import { useQuidContract } from '../hooks/use-quid-contract';
 
 import '../styles/globals.css';
 
@@ -16,6 +16,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [transactions, setTransactions] = useState<any>(null);
   const { selectedAccount, setConnector } = useWallet();
+  const quidContract = useQuidContract();
 
   useEffect(() => {
     if (window.ethereum) {
@@ -41,12 +42,14 @@ const App = ({ Component, pageProps }: AppProps) => {
       }
     };
 
-    const watcher = createQuidWather();
-
-    watcher.on('Mint', fetchData);
+    quidContract.on('Mint', fetchData);
 
     fetchData();
-  }, [selectedAccount]);
+
+    return () => {
+      quidContract.removeListener('Mint', fetchData);
+    };
+  }, [quidContract, selectedAccount]);
 
   return (
     <NotificationProvider>
