@@ -44,7 +44,7 @@ const Footer: React.VFC = () => {
         </audio>
         <button className={styles.music} onClick={togglePlay}>
           <Icon name="music-wave" className={styles.musicWave} />
-          Music is {isPlaying ? 'off' : 'on'}
+          Music is {isPlaying ? 'on' : 'off'}
         </button>
         <div className={styles.spacer} />
         <a
