@@ -86,14 +86,6 @@ const Mint: React.VFC = () => {
 
     const timerId = setInterval(updateTotalSupply, 5000);
 
-    if (selectedAccount) {
-      quidContract
-        .allowance(selectedAccount, quidContract.address)
-        .then((data: any) => {
-          console.log('data: ', formatUnits(data, 6));
-        });
-    }
-
     return () => clearInterval(timerId);
   }, [quidContract, selectedAccount]);
 
@@ -183,13 +175,14 @@ const Mint: React.VFC = () => {
         });
       }
 
-      setState('minting');
-
-      console.log(
-        'mint: ',
-        formatUnits(qdAmount, 24),
-        formatUnits(usdtAmount, 6),
+      const allowance = await quidContract.allowance(
+        selectedAccount,
+        quidContract.address,
       );
+
+      console.log('allowance: ', formatUnits(allowance, 6));
+
+      setState('minting');
 
       notify({
         severity: 'success',

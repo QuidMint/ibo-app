@@ -99,6 +99,8 @@ const Summary: React.VFC = () => {
             href={`https://${
               defaultNewtork === 'mainnet' ? '' : defaultNewtork + '.'
             }etherscan.io/address/${contractId}`}
+            target="_blank"
+            rel="noreferrer"
           >
             {contractId && shortedHash(contractId)}
           </a>
