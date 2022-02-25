@@ -35,6 +35,7 @@ definitions:
         script:
           - |
             source environment.sh
+            source .env.production
             export APP_NAME=ui
             if [[ -f "docker-cache/cache.tar" ]]; then
               docker load < docker-cache/cache.tar;
