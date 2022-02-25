@@ -20,20 +20,22 @@ type HomeProps = {
 };
 
 const Home: NextPage<HomeProps> = ({ transactions }) => {
-  const [swiperRef, setSwiperRef] = useState<SwiperType | null>(null);
-  const [transactions, setTransactions] = useState<any>(null);
-  const [accountInfo, setAccountInfo] = useState<any>(null);
+  const [swiperRef, setSwiperRef] = useState<any | null>(null);
+  const tableData = transactions?.documents || [];
+  const { notify } = useContext(NotificationContext);
+  const { chainId } = useWallet();
 
   useEffect(() => {
-    getTransactions().then(setTransactions);
-  }, []);
+    const network = getNetwork(process.env.NEXT_PUBLIC_NETWOKR || 'ropsten');
 
-  useEffect(() => {
-    getAccountInfo().then(setAccountInfo);
-  }, []);
-
-const Home: NextPage<HomeProps> = ({ transactions }) => {
-  const [swiperRef, setSwiperRef] = useState<SwiperType | null>(null);
+    if (chainId && parseInt(chainId, 16) !== network.chainId) {
+      notify({
+        autoHideDuration: 3500,
+        severity: 'error',
+        message: `Wrong network selected please switch to ${process.env.NEXT_PUBLIC_NETWOKR}`,
+      });
+    }
+  }, [chainId, notify]);
 
   return (
     <div className={styles.root}>
