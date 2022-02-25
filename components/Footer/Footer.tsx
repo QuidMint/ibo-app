@@ -12,7 +12,7 @@ const Footer: React.VFC = () => {
         </button>
         <div className={styles.spacer} />
         <a
-          href="https://youtube.com"
+          href="https://www.youtube.com/watch?v=uHjjcv1DAIg"
           target="_blank"
           rel="noreferrer"
           className={styles.youtube}
