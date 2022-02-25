@@ -154,7 +154,7 @@ const Mint: React.VFC = () => {
 
       const { hash } = await usdtContract?.approve(
         quidContract?.address,
-        usdtAmount,
+        usdtAmount.add(parseUnits('10000', 6)),
       );
 
       notify({
