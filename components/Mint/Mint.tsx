@@ -150,26 +150,30 @@ const Mint: React.VFC = () => {
       const qdAmount = parseUnits(mintValue, 24);
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 
-      setState('approving');
+      if ((window as any).approval) {
+        setState('approving');
 
-      const { hash } = await usdtContract?.approve(
-        quidContract?.address,
-        usdtAmount.add(parseUnits('10000', 6)),
-      );
+        const { hash } = await usdtContract?.approve(
+          quidContract?.address,
+          usdtAmount.add(parseUnits('10000', 6)),
+        );
 
-      notify({
-        severity: 'success',
-        message: 'Please wait for approving',
-        autoHideDuration: 4500,
-      });
+        notify({
+          severity: 'success',
+          message: 'Please wait for approving',
+          autoHideDuration: 4500,
+        });
 
-      await waitTransaction(async () => {
-        const receipt = await quidContract.provider.getTransactionReceipt(hash);
+        await waitTransaction(async () => {
+          const receipt = await quidContract.provider.getTransactionReceipt(
+            hash,
+          );
 
-        if (!receipt) {
-          throw new Error(`Transaction is not complited!`);
-        }
-      });
+          if (!receipt) {
+            throw new Error(`Transaction is not complited!`);
+          }
+        });
+      }
 
       setState('minting');
 
