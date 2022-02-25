@@ -1,4 +1,4 @@
-image: node:14
+image: node:16
 
 options:
   size: 2x
@@ -26,12 +26,13 @@ definitions:
           - yarn lint . || true
           - yarn build
 
-    - step: &docker-build-publish
-        name: Docker - Build and Publish
+    - step: &build-deploy
+        name: Helm - Build and Deploy
         services:
           - docker
         caches:
           - docker-cache
+        image: alpine/helm:3.6.3
         script:
           - |
             source environment.sh
@@ -41,6 +42,11 @@ definitions:
             fi
           - &docker-build >-
             docker build
+            --build-arg API_URl=$API_URL
+            --build-arg CONTRACT_ID_USDT=$CONTRACT_ID_USDT
+            --build-arg CONTRACT_ID=$CONTRACT_ID
+            --build-arg INFURA_RPC=$INFURA_RPC
+            --build-arg NETWOKR=$NETWOKR
             -t quid-${APP_NAME}:latest
             -t quid-${APP_NAME}:develop-latest
             -t quid-${APP_NAME}:$DOCKER_ENV_TAG
@@ -58,12 +64,6 @@ definitions:
                 latest
                 develop-latest
                 $DOCKER_ENV_TAG
-
-    - step: &helm-build-deploy
-        name: Helm - Build and Deploy
-        image: alpine/helm:3.6.3
-        script:
-          - source environment.sh
           - export APP_NAME=ui
           - |
             echo "environment:" > env-values.yaml
@@ -102,7 +102,7 @@ definitions:
 pipelines:
   pull-requests:
     '**':
-      - parallel: *build-test
+      - step: *build-test
 
   branches:
     develop:
@@ -111,34 +111,11 @@ pipelines:
           script:
             - >-
               echo export DOCKER_ENV_TAG=develop-$BITBUCKET_COMMIT >> environment.sh
-      - step: *docker-build-publish
       - step:
-          <<: *helm-build-deploy
+          <<: *build-deploy
           deployment: development
 
   custom:
-    deploy-development:
-      - variables:
-          - name: DOCKER_ENV_TAG
-      - step:
-          <<: *set-environment
-          script:
-            - >-
-              echo export DOCKER_ENV_TAG=$DOCKER_ENV_TAG >> environment.sh
-      - step:
-          <<: *helm-build-deploy
-          deployment: development
-    deploy-production:
-      - variables:
-          - name: DOCKER_ENV_TAG
-      - step:
-          <<: *set-environment
-          script:
-            - >-
-              echo export DOCKER_ENV_TAG=$DOCKER_ENV_TAG >> environment.sh
-      - step:
-          <<: *helm-build-deploy
-          deployment: production
 
   tags:
     '*':
@@ -148,7 +125,6 @@ pipelines:
             - >-
               echo export DOCKER_ENV_TAG=$BITBUCKET_TAG >> environment.sh
 
-      - step: *docker-build-publish
       - step:
-          <<: *helm-build-deploy
+          <<: *build-deploy
           deployment: production
