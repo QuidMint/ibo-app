@@ -25,6 +25,7 @@ ARG NETWOKR
 ENV NEXT_PUBLIC_NETWOKR=$NETWOKR
 ENV CI=true
 
+
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -34,7 +35,7 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npm run build
+RUN env && npm run build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
