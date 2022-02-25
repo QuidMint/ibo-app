@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { useEffect, useState } from 'react';
 import { useQuidContract } from '../../hooks/use-quid-contract';
+import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { numberWithCommas } from '../../utils/number-with-commas';
 import styles from './Summary.module.scss';
 
@@ -10,6 +11,7 @@ const currentTimestamp = (Date.now() / 1000).toFixed(0);
 
 const Summary: React.VFC = () => {
   const contract = useQuidContract();
+  const usdtContract = useUsdtContract();
   const [smartContractStartTimestamp, setSmartContractStartTimestamp] =
     useState<string>('');
   const [mintPeriodDays, setMintPeriodDays] = useState<string>('');
@@ -38,16 +40,18 @@ const Summary: React.VFC = () => {
     });
 
     const fetchTotalSupplyCap = () =>
-      contract?.get_total_supply_cap().then((totalSupplyCap: BigNumber) => {
-        setTotalDeposited(formatUnits(totalSupplyCap, 24).split('.')[0]);
-      });
+      usdtContract
+        ?.balanceOf(process.env.NEXT_PUBLIC_CONTRACT_ID)
+        .then((data: BigNumber) => {
+          setTotalDeposited(formatUnits(data, 6));
+        });
 
     fetchTotalSupplyCap();
 
     const timerId = setInterval(fetchTotalSupplyCap, 5000);
 
     return () => clearInterval(timerId);
-  }, [contract]);
+  }, [contract, usdtContract]);
 
   const daysLeft = smartContractStartTimestamp ? (
     Math.ceil(

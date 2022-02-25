@@ -78,6 +78,10 @@
     font-size: 108px;
     color: #ff9900;
   }
+
+  input:-webkit-autofill {
+    -webkit-text-fill-color: transparent !important;
+  }
 }
 
 .maxButton {

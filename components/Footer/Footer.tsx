@@ -1,14 +1,50 @@
-import { Icon } from '../Lib/Icon';
 import cx from 'classnames';
+import { Icon } from '../Lib/Icon';
 import styles from './Footer.module.scss';
+import { useEffect, useRef, useState } from 'react';
 
 const Footer: React.VFC = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const player = useRef<HTMLAudioElement | null>();
+
+  const togglePlay = () => {
+    if (!player.current) return;
+
+    if (isPlaying) {
+      setIsPlaying(false);
+      player.current.pause();
+    } else {
+      setIsPlaying(true);
+      player.current.play();
+    }
+  };
+
+  useEffect(() => {
+    const play = () => {
+      setIsPlaying(true);
+      player.current?.play();
+    };
+
+    document.addEventListener('mousedown', play);
+    document.addEventListener('keydown', play);
+    document.addEventListener('touchstart', play);
+
+    return () => {
+      document.removeEventListener('mousedown', play);
+      document.removeEventListener('keydown', play);
+      document.removeEventListener('touchstart', play);
+    };
+  }, []);
+
   return (
     <footer className={styles.root}>
       <div className={styles.media}>
-        <button className={styles.music}>
+        <audio ref={(el) => (player.current = el)} autoPlay loop>
+          <source src="/sounds/song.mp4" type="audio/mpeg" />
+        </audio>
+        <button className={styles.music} onClick={togglePlay}>
           <Icon name="music-wave" className={styles.musicWave} />
-          Music is on
+          Music is {isPlaying ? 'off' : 'on'}
         </button>
         <div className={styles.spacer} />
         <a
