@@ -1,4 +1,4 @@
-import { createClient, SearchOptions } from 'redis';
+import { createClient, SchemaFieldTypes, SearchOptions } from 'redis';
 
 export const redisClient = createClient({
   url: process.env.REDIS_CONNECTION_STRING,
@@ -9,12 +9,37 @@ class DatabaseClient {
     this.client = client;
   }
 
+  async init() {
+    console.log('[Database]: Connecting');
+    await this.connect();
+    console.log('[Database]: Connected!');
+
+    console.log('[Database]: Creating Indexes');
+    await this.createIndexes([
+      {
+        index: 'idx:transactions',
+        schema: {
+          address: SchemaFieldTypes.TAG,
+          timestamp: SchemaFieldTypes.NUMERIC,
+        },
+      },
+    ]);
+
+    console.log('[Database]: Indexes successfuly created!');
+  }
+
   async connect() {
-    return this.client.connect();
+    if (!this.client.isOpen) {
+      return this.client.connect();
+    }
   }
 
   async close() {
-    return this.client.quit();
+    console.log('close');
+
+    if (this.client.isOpen) {
+      return this.client.disconnect();
+    }
   }
 
   async createIndexes(indexes: any[]) {
@@ -26,7 +51,7 @@ class DatabaseClient {
       await Promise.all(promises);
     } catch (e: any) {
       if (e.message === 'Index already exists') {
-        console.log('Index exists already, skipped creation.');
+        console.log('[Database]: Index exists already, skipped creation.');
       } else {
         // Something went wrong, perhaps RediSearch isn't installed...
         console.error(e);
@@ -36,6 +61,10 @@ class DatabaseClient {
 
   async save<T extends {}>(key: string, value: T): Promise<number> {
     return this.client.hSet(key, value);
+  }
+
+  async get<T>(key: string): Promise<T> {
+    return this.client.hGetAll(key) as unknown as T;
   }
 
   async findAll(index: string, query: string, options?: SearchOptions) {

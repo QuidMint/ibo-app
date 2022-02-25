@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quid-ui
+data:
+{{- with .Values.ingress.host }}
+  NEXT_PUBLIC_API_URL: https://{{ . }}/api
+{{- end }}
+{{- range $k, $v := .Values.environment }}
+  {{ $k }}: "{{ $v }}"
+{{- end }}

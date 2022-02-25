@@ -27,4 +27,4 @@ export type UserInfoResponse = {
   address: string;
   costInUsd: number;
   qdAmount: number;
-}
+};

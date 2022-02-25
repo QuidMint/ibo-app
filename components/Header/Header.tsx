@@ -52,18 +52,26 @@ const Header: React.VFC<HeaderProps> = ({ userInfo }) => {
     <div className={styles.summary}>
       <div className={styles.summaryEl}>
         <div className={styles.summaryElTitle}>Deposited</div>
-        <div className={styles.summaryElValue}>${userInfo?.costInUsd}</div>
+        <div className={styles.summaryElValue}>
+          ${numberWithCommas(userInfo?.costInUsd.toFixed() || '0')}
+        </div>
       </div>
       <div className={styles.summaryEl}>
         <div className={styles.summaryElTitle}>My Future QD</div>
-        <div className={styles.summaryElValue}>{userInfo?.qdAmount}</div>
+        <div className={styles.summaryElValue}>
+          {numberWithCommas(userInfo?.qdAmount.toFixed() || '0')}
+        </div>
       </div>
       <div className={styles.summaryEl}>
         <div className={styles.summaryElTitle}>Gains</div>
         <div className={styles.summaryElValue}>
           {userInfo?.qdAmount &&
             userInfo?.costInUsd &&
-            `$${Number(userInfo?.qdAmount) - Number(userInfo?.costInUsd)}`}
+            numberWithCommas(
+              `$${(
+                Number(userInfo.qdAmount) - Number(userInfo.costInUsd)
+              ).toFixed()}`,
+            )}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { useEffect, useState } from 'react';
 import { useQuidContract } from '../../hooks/use-quid-contract';
-import { getTransactions } from '../../services';
+import { numberWithCommas } from '../../utils/number-with-commas';
 import styles from './Summary.module.scss';
 
 const SECONDS_IN_DAY = 86400;
@@ -68,12 +68,12 @@ const Summary: React.VFC = () => {
       <div className={styles.section}>
         <div className={styles.title}>Total Deposited</div>
         <div className={styles.value}>
-          ${parseFloat(totalDeposited).toFixed()}
+          ${numberWithCommas(parseFloat(totalDeposited).toFixed())}
         </div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Total Minted</div>
-        <div className={styles.value}>{totalMinted}</div>
+        <div className={styles.value}>{numberWithCommas(totalMinted)}</div>
       </div>
     </div>
   );
