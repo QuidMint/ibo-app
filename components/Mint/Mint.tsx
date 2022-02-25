@@ -210,9 +210,6 @@ const Mint: React.VFC = () => {
           </span>
         </div>
         <div className={styles.inputContainer}>
-          <label htmlFor="mint-input" className={styles.dollarSign}>
-            QD
-          </label>
           <input
             type="text"
             id="mint-input"
@@ -222,6 +219,9 @@ const Mint: React.VFC = () => {
             placeholder="Mint amount"
             ref={inputRef}
           />
+          <label htmlFor="mint-input" className={styles.dollarSign}>
+            QD
+          </label>
           <button
             className={styles.maxButton}
             onClick={handleSetMaxValue}
