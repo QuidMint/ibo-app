@@ -1,15 +1,21 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { getNetwork } from '@ethersproject/networks';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { useEffect, useState } from 'react';
 import { useQuidContract } from '../../hooks/use-quid-contract';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
+import { useWallet } from '../../hooks/use-wallet';
 import { numberWithCommas } from '../../utils/number-with-commas';
+import shortedHash from '../../utils/shorted-hash';
 import styles from './Summary.module.scss';
 
 const SECONDS_IN_DAY = 86400;
 const currentTimestamp = (Date.now() / 1000).toFixed(0);
+const defaultNewtork = process.env.NEXT_PUBLIC_NETWOKR;
+const contractId = process.env.NEXT_PUBLIC_CONTRACT_ID;
 
 const Summary: React.VFC = () => {
+  const { chainId } = useWallet();
   const contract = useQuidContract();
   const usdtContract = useUsdtContract();
   const [smartContractStartTimestamp, setSmartContractStartTimestamp] =
@@ -85,6 +91,24 @@ const Summary: React.VFC = () => {
       <div className={styles.section}>
         <div className={styles.title}>Total Minted</div>
         <div className={styles.value}>{numberWithCommas(totalMinted)}</div>
+      </div>
+      <div className={styles.section}>
+        <div className={styles.title}>Contract</div>
+        <div className={styles.value}>
+          <a
+            href={`https://${
+              defaultNewtork === 'mainnet' ? '' : defaultNewtork
+            }.etherscan.io/address/${contractId}`}
+          >
+            {contractId && shortedHash(contractId)}
+          </a>
+        </div>
+      </div>
+      <div className={styles.section}>
+        <div className={styles.title}>Network</div>
+        <div className={styles.value}>
+          {chainId && getNetwork(parseInt(chainId, 16)).name}
+        </div>
       </div>
     </div>
   );

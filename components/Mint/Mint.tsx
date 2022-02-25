@@ -86,8 +86,16 @@ const Mint: React.VFC = () => {
 
     const timerId = setInterval(updateTotalSupply, 5000);
 
+    if (selectedAccount) {
+      quidContract
+        .allowance(selectedAccount, quidContract.address)
+        .then((data: any) => {
+          console.log('data: ', formatUnits(data, 6));
+        });
+    }
+
     return () => clearInterval(timerId);
-  }, [quidContract]);
+  }, [quidContract, selectedAccount]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
