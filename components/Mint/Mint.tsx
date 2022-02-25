@@ -27,6 +27,8 @@ const waitTransaction = withRetryHandling(
   { baseDelay: 2000, numberOfTries: 30 },
 );
 
+const DELAY = 60 * 60 * 1;
+
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,24 +41,22 @@ const Mint: React.VFC = () => {
   const [availableValue, setTotalSupply] = useState('');
   const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
 
-  const getAmounts = async (
-    mintValue: string,
-  ): Promise<{ qd: BigNumber; usdt: BigNumber }> => {
-    const currentTimestamp = (Date.now() / 1000).toFixed(0);
-    const qdAmount = parseUnits(mintValue, 24);
-    const usdtAmount: BigNumber = await quidContract?.qd_amt_to_usdt_amt(
-      qdAmount,
+  const qdAmountToUsdtAmt = async (
+    qdAmount: string | BigNumber,
+    delay: number = 0,
+  ): Promise<BigNumber> => {
+    const currentTimestamp = (Date.now() / 1000 + delay).toFixed(0);
+    return await quidContract?.qd_amt_to_usdt_amt(
+      qdAmount instanceof BigNumber ? qdAmount : parseUnits(qdAmount, 24),
       currentTimestamp,
     );
-
-    return { qd: qdAmount, usdt: usdtAmount };
   };
 
   useDebounce(
     mintValue,
     async () => {
       if (parseInt(mintValue) > 0) {
-        const { usdt } = await getAmounts(mintValue);
+        const usdt = await qdAmountToUsdtAmt(mintValue, 24);
         setUsdtValue(parseFloat(formatUnits(usdt, 6)));
       } else {
         setUsdtValue(0);
@@ -71,8 +71,14 @@ const Mint: React.VFC = () => {
         quidContract.get_total_supply_cap(),
         quidContract.totalSupply(),
       ]).then(([totalSupplyCap, totalSupply]) => {
-        setTotalSupply(formatUnits(totalSupply, 24));
-        setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
+        const totalSupplyCapInt = parseInt(formatUnits(totalSupplyCap, 24));
+
+        setTotalSupply(
+          (
+            totalSupplyCapInt - parseInt(formatUnits(totalSupply, 24))
+          ).toString(),
+        );
+        setTotalSupplyCap(totalSupplyCapInt);
       });
     };
 
@@ -80,25 +86,10 @@ const Mint: React.VFC = () => {
       updateTotalSupply();
     }
 
-    quidContract?.on('Mint', updateTotalSupply);
+    const timerId = setInterval(updateTotalSupply, 5000);
 
-    return () => {
-      quidContract?.removeListener('Mint', updateTotalSupply);
-    };
+    return () => clearInterval(timerId);
   }, [quidContract]);
-
-  useDebounce(
-    mintValue,
-    async () => {
-      if (parseInt(mintValue) > 0) {
-        const { usdt } = await getAmounts(mintValue);
-        setUsdtValue(parseFloat(formatUnits(usdt, 6)));
-      } else {
-        setUsdtValue(0);
-      }
-    },
-    500,
-  );
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
@@ -164,11 +155,15 @@ const Mint: React.VFC = () => {
     }
 
     try {
-      const { qd, usdt } = await getAmounts(mintValue);
+      const qdAmount = parseUnits(mintValue, 24);
+      const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 
       setState('approving');
 
-      const { hash } = await usdtContract?.approve(quidContract?.address, usdt);
+      const { hash } = await usdtContract?.approve(
+        quidContract?.address,
+        usdtAmount,
+      );
 
       notify({
         severity: 'success',
@@ -186,26 +181,27 @@ const Mint: React.VFC = () => {
 
       setState('minting');
 
+      console.log(
+        'mint: ',
+        formatUnits(qdAmount, 24),
+        formatUnits(usdtAmount, 6),
+      );
+
       notify({
         severity: 'success',
         message: 'Please check your wallet',
       });
 
-      if (process.env.NEXT_PUBLIC_NETWOKR === 'ropsten') {
-        await quidContract?.mint(qd); // because of old version
-      } else {
-        await quidContract?.mint(qd, selectedAccount);
-      }
+      await quidContract?.mint(qdAmount, selectedAccount);
 
       notify({
         severity: 'success',
         message: 'Your minting is pending!',
       });
-    } catch (err) {
-      console.dir(err);
+    } catch (err: any) {
       notify({
         severity: 'error',
-        message: (err as Error).message,
+        message: err.error?.message || err.message,
         autoHideDuration: 3200,
       });
     } finally {
