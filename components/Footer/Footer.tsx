@@ -23,17 +23,15 @@ const Footer: React.VFC = () => {
     const play = () => {
       setIsPlaying(true);
       player.current?.play();
+
+      document.removeEventListener('mousedown', play);
+      document.removeEventListener('keydown', play);
+      document.removeEventListener('touchstart', play);
     };
 
     document.addEventListener('mousedown', play);
     document.addEventListener('keydown', play);
     document.addEventListener('touchstart', play);
-
-    return () => {
-      document.removeEventListener('mousedown', play);
-      document.removeEventListener('keydown', play);
-      document.removeEventListener('touchstart', play);
-    };
   }, []);
 
   return (
