@@ -97,8 +97,8 @@ const Summary: React.VFC = () => {
         <div className={styles.value}>
           <a
             href={`https://${
-              defaultNewtork === 'mainnet' ? '' : defaultNewtork
-            }.etherscan.io/address/${contractId}`}
+              defaultNewtork === 'mainnet' ? '' : defaultNewtork + '.'
+            }etherscan.io/address/${contractId}`}
           >
             {contractId && shortedHash(contractId)}
           </a>
