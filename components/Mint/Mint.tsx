@@ -35,7 +35,7 @@ const Mint: React.VFC = () => {
   const { selectedAccount } = useWallet();
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [availableValue, setTotalSupply] = useState('');
   const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
 
   const getAmounts = async (
@@ -73,7 +73,7 @@ const Mint: React.VFC = () => {
           contract.get_total_supply_cap(),
           contract.totalSupply(),
         ]).then(([totalSupplyCap, totalSupply]) => {
-          setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
+          setTotalSupply(formatUnits(totalSupply, 24));
           setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
         });
       };
@@ -83,13 +83,6 @@ const Mint: React.VFC = () => {
     }
     return () => timerId && clearInterval(timerId);
   }, [contract]);
-
-  useEffect(() => {
-    console.log(contract);
-
-    contract?.get_total_supply_cap().then((totalSupply: BigNumber) => {
-      console.log('t1: ', formatUnits(totalSupply, 24));
-    });
 
   useDebounce(
     mintValue,
@@ -103,30 +96,6 @@ const Mint: React.VFC = () => {
     },
     500,
   );
-
-  useEffect(() => {
-    let timerId: NodeJS.Timer;
-
-    if (contract) {
-      timerId = setInterval(() => {
-        Promise.all([
-          contract.get_total_supply_cap(),
-          contract.totalSupply(),
-        ]).then(([totalSupplyCap, totalSupply]) => {
-          console.log(
-            formatUnits(totalSupply, 24),
-            formatUnits(totalSupplyCap, 24),
-          );
-          setTotalSupply(parseInt(formatUnits(totalSupply, 24)));
-          setTotalSupplyCap(parseInt(formatUnits(totalSupplyCap, 24)));
-        });
-      };
-
-      timerId = setInterval(updateTotalSupply, 60000);
-      updateTotalSupply();
-    }
-    return () => timerId && clearInterval(timerId);
-  }, [contract]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
@@ -208,7 +177,7 @@ const Mint: React.VFC = () => {
 
       setState('minting');
 
-      await contract?.mint(qd);
+      await contract?.mint(qd, selectedAccount);
 
       notify({
         severity: 'success',
