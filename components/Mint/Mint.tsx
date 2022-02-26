@@ -19,6 +19,7 @@ import { numberWithCommas } from '../../utils/number-with-commas';
 
 import styles from './Mint.module.scss';
 import { waitTransaction } from '../../lib/contracts';
+import _ from 'lodash';
 
 const DELAY = 60 * 60 * 4;
 
@@ -157,12 +158,19 @@ const Mint: React.VFC = () => {
       if (usdtAmount.gt(allowanceBigNumber)) {
         setState('approving');
 
+        const gasPrice = await quidContract.provider.getGasPrice();
+        const lastBlock = await quidContract.provider.getBlock('latest');
+        const gasLimit = lastBlock.gasLimit.div(lastBlock.transactions.length);
+
+        console.log('gasLimit: ', gasLimit.toNumber());
+        console.log('formatUnits: ', formatUnits(gasPrice, 'gwei'));
+
         const { hash } = await usdtContract?.increaseAllowance(
           quidContract?.address,
           usdtAmount,
           {
-            gasPrice: parseUnits('100', 'gwei'),
-            gasLimit: 1000000,
+            gasPrice: gasPrice,
+            gasLimit: gasLimit.toNumber(),
           },
         );
 

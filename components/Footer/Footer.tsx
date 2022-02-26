@@ -22,7 +22,7 @@ const Footer: React.VFC = () => {
   useEffect(() => {
     const play = () => {
       setIsPlaying(true);
-      player.current?.play();
+      // player.current?.play();
 
       document.removeEventListener('mousedown', play);
       document.removeEventListener('keydown', play);
