@@ -9,6 +9,7 @@ import { runWatchers } from './watchers';
 import path from 'path';
 import { transactionsHandler } from './api/transactions';
 import { accountInfoHandler } from './api/account-info';
+import { runAggregation } from './database/aggregator';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = process.env.HOST || 'localhost';
@@ -19,6 +20,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(async () => {
   await databaseClient.init();
   await runWatchers();
+  await runAggregation();
 
   const server = express();
 
