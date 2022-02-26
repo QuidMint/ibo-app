@@ -33,6 +33,16 @@ const Header: React.VFC<HeaderProps> = ({ userInfo }) => {
 
   const handleWalletConnect = async () => {
     try {
+      if (!window.ethereum?.isMetaMask) {
+        notify({
+          severity: 'error',
+          message: 'Metamask is not installed!',
+          autoHideDuration: 5500,
+        });
+
+        return;
+      }
+
       await connect();
       notify({
         severity: 'success',
