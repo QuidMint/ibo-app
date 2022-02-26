@@ -8,6 +8,7 @@ export interface MapEvents {
 }
 
 export type Transaction = {
+  contractAddress: string;
   transactionHash: string;
   address: string;
   costInUsd: string;

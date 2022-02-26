@@ -3,6 +3,7 @@ import { databaseClient } from '../database';
 import { formatUnits } from '@ethersproject/units';
 import { createQuidContract } from '../../lib/contracts';
 import { EventData } from '../../lib/contracts/types';
+import { Transaction } from '../../types';
 
 export async function runWatchers() {
   const watcher = createQuidContract();
@@ -20,12 +21,13 @@ export async function runWatchers() {
 
     try {
       const block = await watcher.provider.getBlock(blockHash);
-      const transactionData = {
+      const transactionData: Transaction = {
+        contractAddress: watcher.address,
         transactionHash,
         address,
         costInUsd: formatUnits(costInUsd, 6),
         qdAmount: formatUnits(qdAmount, 24),
-        timestamp: block.timestamp,
+        timestamp: block.timestamp.toString(),
       };
 
       console.log(

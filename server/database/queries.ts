@@ -1,6 +1,8 @@
 import { databaseClient } from './client';
 import { PaginationResponse, Transaction } from '../../types';
 
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ID;
+
 type TransactionQuery = {
   limit?: number;
   offset?: number;
@@ -14,7 +16,9 @@ export const findAllTransactions = async ({
 }: TransactionQuery) => {
   const response = await databaseClient.findAll(
     'idx:transactions',
-    address ? `@address:{${address}}` : '*',
+    address
+      ? `@address:{${address}} @contractAddress:{${contractAddress}} SORTBY timestamp DESC`
+      : `@contractAddress:{${contractAddress}} SORTBY timestamp DESC`,
     { LIMIT: { from: offset, size: limit } },
   );
 
