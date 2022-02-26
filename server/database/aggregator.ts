@@ -39,7 +39,8 @@ export const handleMint = async (
 
     console.log(`[MintHandler - ${transactionHash}]: Save transaction hash`);
 
-    await databaseClient.save('lastTransactionHash', transactionHash);
+    await databaseClient.set('lastTransactionHash', transactionHash);
+    await databaseClient.set('lastBlockHash', blockHash);
 
     console.log(
       `[MintHandler - ${transactionHash}]: Event successfuly savated to database`,
@@ -50,21 +51,18 @@ export const handleMint = async (
   }
 };
 
-const settings = {
-  fromBlock: '0x0',
-};
-
 export const runAggregation = async () => {
   console.log('[Aggregator]: Start Aggregation');
 
   const abiInterface = new Interface(contractJson.abi);
+  const fromBlock = await databaseClient.get('lastBlockHash');
 
   const logs = await defaultProvider.getLogs({
-    fromBlock: settings.fromBlock,
+    fromBlock: fromBlock || '0x0',
     address: contractAddress,
   });
 
-  console.log('Count logs: ', logs.length);
+  console.log(`[Aggregator]: Count logs(${logs.length})`);
 
   await Promise.all(
     logs.map(async (item, index) => {
@@ -72,11 +70,7 @@ export const runAggregation = async () => {
         const result = abiInterface.decodeEventLog('Mint', item.data);
         const tx = await defaultProvider.getTransaction(item.transactionHash);
 
-        if (index === logs.length - 1) {
-          settings.fromBlock = tx.blockHash || '0x0';
-        }
-
-        await handleMint(tx.from, result.qd_amt, result.cost_in_usd, item);
+        await handleMint(tx.from, result.cost_in_usd, result.qd_amt, item);
       } catch (err) {
         console.error(`[Aggregator]: Error: ${(err as Error).message}`);
         return null;
@@ -85,4 +79,4 @@ export const runAggregation = async () => {
   );
 };
 
-setInterval(runAggregation, 10000);
+setInterval(runAggregation, 15000);

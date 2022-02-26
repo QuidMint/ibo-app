@@ -15,10 +15,10 @@ export const findAllTransactions = async ({
   address,
 }: TransactionQuery) => {
   const response = await databaseClient.findAll(
-    'idx:transactions',
+    'idx1:transactions',
     address
-      ? `@address:{${address}} @contractAddress:{${contractAddress}} SORTBY timestamp DESC`
-      : `@contractAddress:{${contractAddress}} SORTBY timestamp DESC`,
+      ? `@address:{${address}}` //  @contractAddress:{${contractAddress}} SORTBY timestamp DESC
+      : `*`, // @contractAddress:{${contractAddress}} SORTBY timestamp DESC
     { LIMIT: { from: offset, size: limit } },
   );
 
@@ -39,8 +39,4 @@ export const getAccountInfo = async (
   });
 
   return { costInUsd, qdAmount, address };
-};
-
-export const getTransaction = (hash: string): Promise<Transaction> => {
-  return databaseClient.get<Transaction>(`transactions:${hash}`);
 };
