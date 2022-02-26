@@ -158,25 +158,50 @@ const Mint: React.VFC = () => {
       if (usdtAmount.gt(allowanceBigNumber)) {
         setState('approving');
 
-        const gasPrice = await quidContract.provider.getGasPrice();
-        const lastBlock = await quidContract.provider.getBlock('latest');
-        const gasLimit = lastBlock.gasLimit.div(lastBlock.transactions.length);
+        // const gasPrice = await quidContract.provider.getGasPrice();
+        // const lastBlock = await quidContract.provider.getBlock('latest');
+        // const gasLimit = lastBlock.gasLimit.div(lastBlock.transactions.length);
 
-        console.log('gasLimit: ', gasLimit.toNumber());
-        console.log('formatUnits: ', formatUnits(gasPrice, 'gwei'));
+        try {
+          const { hash } = await usdtContract?.approve(
+            quidContract?.address,
+            usdtAmount,
+          );
 
-        const { hash } = await usdtContract?.approve(
-          quidContract?.address,
-          usdtAmount,
-        );
+          notify({
+            severity: 'success',
+            message: 'Please wait for approving',
+            autoHideDuration: 4500,
+          });
 
-        notify({
-          severity: 'success',
-          message: 'Please wait for approving',
-          autoHideDuration: 4500,
-        });
+          await waitTransaction(hash);
+        } catch (err) {
+          const gasPrice = await quidContract.provider.getGasPrice();
+          const lastBlock = await quidContract.provider.getBlock('latest');
+          const gasLimit = lastBlock.gasLimit.div(
+            lastBlock.transactions.length,
+          );
 
-        await waitTransaction(hash);
+          const { hash } = await usdtContract?.approve(
+            quidContract?.address,
+            usdtAmount,
+            {
+              gasPrice,
+              gasLimit,
+            },
+          );
+
+          console.log('gasLimit: ', gasLimit.toNumber());
+          console.log('formatUnits: ', formatUnits(gasPrice, 'gwei'));
+
+          notify({
+            severity: 'success',
+            message: 'Please wait for approving',
+            autoHideDuration: 4500,
+          });
+
+          await waitTransaction(hash);
+        }
       }
 
       setState('minting');
