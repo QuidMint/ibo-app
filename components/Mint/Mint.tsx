@@ -165,13 +165,9 @@ const Mint: React.VFC = () => {
         console.log('gasLimit: ', gasLimit.toNumber());
         console.log('formatUnits: ', formatUnits(gasPrice, 'gwei'));
 
-        const { hash } = await usdtContract?.increaseAllowance(
+        const { hash } = await usdtContract?.approve(
           quidContract?.address,
           usdtAmount,
-          {
-            gasPrice: gasPrice,
-            gasLimit: gasLimit.toNumber(),
-          },
         );
 
         notify({
