@@ -155,53 +155,34 @@ const Mint: React.VFC = () => {
         formatUnits(usdtAmount, 6),
       );
 
-      if (usdtAmount.gt(allowanceBigNumber)) {
+      if (parseInt(formatUnits(allowanceBigNumber, 6)) === 0) {
         setState('approving');
 
-        // const gasPrice = await quidContract.provider.getGasPrice();
-        // const lastBlock = await quidContract.provider.getBlock('latest');
-        // const gasLimit = lastBlock.gasLimit.div(lastBlock.transactions.length);
+        const { hash } = await usdtContract?.approve(
+          quidContract?.address,
+          usdtAmount,
+        );
 
-        try {
-          const { hash } = await usdtContract?.approve(
-            quidContract?.address,
-            usdtAmount,
-          );
+        notify({
+          severity: 'success',
+          message: 'Please wait for approving',
+          autoHideDuration: 4500,
+        });
 
-          notify({
-            severity: 'success',
-            message: 'Please wait for approving',
-            autoHideDuration: 4500,
-          });
+        await waitTransaction(hash);
+      } else if (usdtAmount.gt(allowanceBigNumber)) {
+        const { hash } = await usdtContract?.increaseAllowance(
+          quidContract?.address,
+          usdtAmount,
+        );
 
-          await waitTransaction(hash);
-        } catch (err) {
-          const gasPrice = await quidContract.provider.getGasPrice();
-          const lastBlock = await quidContract.provider.getBlock('latest');
-          const gasLimit = lastBlock.gasLimit.div(
-            lastBlock.transactions.length,
-          );
+        notify({
+          severity: 'success',
+          message: 'Please wait for approving',
+          autoHideDuration: 4500,
+        });
 
-          const { hash } = await usdtContract?.approve(
-            quidContract?.address,
-            usdtAmount,
-            {
-              gasPrice,
-              gasLimit,
-            },
-          );
-
-          console.log('gasLimit: ', gasLimit.toNumber());
-          console.log('formatUnits: ', formatUnits(gasPrice, 'gwei'));
-
-          notify({
-            severity: 'success',
-            message: 'Please wait for approving',
-            autoHideDuration: 4500,
-          });
-
-          await waitTransaction(hash);
-        }
+        await waitTransaction(hash);
       }
 
       setState('minting');
