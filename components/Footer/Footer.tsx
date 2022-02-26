@@ -38,7 +38,8 @@ const Footer: React.VFC = () => {
     <footer className={styles.root}>
       <div className={styles.media}>
         <audio ref={(el) => (player.current = el)} autoPlay loop>
-          <source src="/sounds/song.mp4" type="audio/mpeg" />
+          <source src="/sounds/song.mp4" type="audio/mp4" />
+          <source src="/sounds/song.mp3" type="audio/mpeg" />
         </audio>
         <button className={styles.music} onClick={togglePlay}>
           <Icon name="music-wave" className={styles.musicWave} />
