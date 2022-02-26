@@ -5,9 +5,8 @@ import { createQuidContract } from '../../lib/contracts';
 import { EventData } from '../../lib/contracts/types';
 
 export async function runWatchers() {
-  console.log('[ContactWatcher]: Start watching');
-
   const watcher = createQuidContract();
+  console.log(`[ContactWatcher]: Start watching: ${watcher.address}`);
 
   const handleMint = async (
     address: string,
@@ -56,5 +55,5 @@ export async function runWatchers() {
   };
 
   watcher.on('Mint', handleMint);
-  console.log(`[ContactWatcher]: Subscribe to events`);
+  console.log(`[ContactWatcher]: Subscribe to events: Mint`);
 }

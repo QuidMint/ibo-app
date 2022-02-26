@@ -21,7 +21,7 @@ import styles from './Mint.module.scss';
 import { waitTransaction } from '../../lib/contracts';
 import _ from 'lodash';
 
-const DELAY = 60 * 60 * 4;
+const DELAY = 60 * 60 * 8; // some buffer for allowance
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
@@ -104,7 +104,7 @@ const Mint: React.VFC = () => {
     }
   };
 
-  const handleSetMaxValue = () => {
+  const handleSetMaxValue = async () => {
     if (!selectedAccount) {
       notify({
         message: 'Please connect your wallet',
@@ -114,7 +114,12 @@ const Mint: React.VFC = () => {
       return;
     }
 
-    setMintValue(`${totalSupplyCap - +totalSupply}`);
+    const costOfOneQd = await qdAmountToUsdtAmt('1');
+    const balance = await usdtContract.balanceOf(selectedAccount);
+
+    setMintValue(
+      `${(+formatUnits(balance, 6) / +formatUnits(costOfOneQd, 6)).toFixed()}`,
+    );
 
     if (inputRef) {
       inputRef.current?.focus();
@@ -124,6 +129,14 @@ const Mint: React.VFC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    if (!selectedAccount) {
+      notify({
+        severity: 'error',
+        message: 'Please connect your wallet',
+      });
+      return;
+    }
+
     if (!mintValue.length) {
       notify({
         severity: 'error',
@@ -132,10 +145,10 @@ const Mint: React.VFC = () => {
       return;
     }
 
-    if (!selectedAccount) {
+    if (+mintValue <= 100) {
       notify({
         severity: 'error',
-        message: 'Please connect your wallet',
+        message: 'The amount should be more than 100',
       });
       return;
     }
@@ -150,40 +163,38 @@ const Mint: React.VFC = () => {
       );
 
       console.log(
-        'allowance: ',
+        'Start minting:',
+        '\nCurrent allowance: ',
         formatUnits(allowanceBigNumber, 6),
+        '\nUsdt amount: ',
         formatUnits(usdtAmount, 6),
       );
 
-      if (parseInt(formatUnits(allowanceBigNumber, 6)) === 0) {
+      if (parseInt(formatUnits(allowanceBigNumber, 6)) !== 0) {
         setState('approving');
 
-        const { hash } = await usdtContract?.approve(
+        const { hash } = await usdtContract?.decreaseAllowance(
           quidContract?.address,
-          usdtAmount,
+          allowanceBigNumber,
         );
-
-        notify({
-          severity: 'success',
-          message: 'Please wait for approving',
-          autoHideDuration: 4500,
-        });
-
-        await waitTransaction(hash);
-      } else if (usdtAmount.gt(allowanceBigNumber)) {
-        const { hash } = await usdtContract?.increaseAllowance(
-          quidContract?.address,
-          usdtAmount,
-        );
-
-        notify({
-          severity: 'success',
-          message: 'Please wait for approving',
-          autoHideDuration: 4500,
-        });
 
         await waitTransaction(hash);
       }
+
+      setState('approving');
+
+      const { hash } = await usdtContract?.approve(
+        quidContract?.address,
+        usdtAmount,
+      );
+
+      notify({
+        severity: 'success',
+        message: 'Please wait for approving',
+        autoHideDuration: 4500,
+      });
+
+      await waitTransaction(hash);
 
       setState('minting');
 
@@ -192,7 +203,20 @@ const Mint: React.VFC = () => {
         message: 'Please check your wallet',
       });
 
-      console.log('mint: ', qdAmount, selectedAccount);
+      const allowanceBeforeMinting: BigNumber = await usdtContract.allowance(
+        selectedAccount,
+        quidContract.address,
+      );
+
+      console.log(
+        'Start minting:',
+        '\nQD amount: ',
+        mintValue,
+        '\nCurrent account: ',
+        selectedAccount,
+        '\nAllowance: ',
+        formatUnits(allowanceBeforeMinting, 6),
+      );
 
       await quidContract?.mint(qdAmount, selectedAccount);
 
@@ -254,7 +278,7 @@ const Mint: React.VFC = () => {
         </div>
         <div className={styles.sub}>
           <div className={styles.subLeft}>
-            $
+            Cost $
             <strong>
               {usdtValue === 0
                 ? 'USDT Amount'

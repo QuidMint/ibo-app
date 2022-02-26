@@ -34,27 +34,28 @@ const Summary: React.VFC = () => {
       setSmartContractStartTimestamp(data.toString());
     });
 
-    const qdAmount = parseUnits('1', 24);
-    contract
-      ?.qd_amt_to_usdt_amt(qdAmount, currentTimestamp)
-      .then((data: BigNumber) => {
-        setPrice(String(Number(formatUnits(data, 6)) * 100));
+    const updateInfo = () => {
+      const qdAmount = parseUnits('1', 24);
+      contract
+        ?.qd_amt_to_usdt_amt(qdAmount, currentTimestamp)
+        .then((data: BigNumber) => {
+          setPrice(String(Number(formatUnits(data, 6)) * 100));
+        });
+
+      contract?.totalSupply().then((totalSupply: BigNumber) => {
+        setTotalMinted(formatUnits(totalSupply, 24).split('.')[0]);
       });
 
-    contract?.totalSupply().then((totalSupply: BigNumber) => {
-      setTotalMinted(formatUnits(totalSupply, 24).split('.')[0]);
-    });
-
-    const fetchTotalSupplyCap = () =>
       usdtContract
         ?.balanceOf(process.env.NEXT_PUBLIC_CONTRACT_ID)
         .then((data: BigNumber) => {
           setTotalDeposited(formatUnits(data, 6));
         });
+    };
 
-    fetchTotalSupplyCap();
+    const timerId = setInterval(updateInfo, 5000);
 
-    const timerId = setInterval(fetchTotalSupplyCap, 5000);
+    updateInfo();
 
     return () => clearInterval(timerId);
   }, [contract, usdtContract]);
