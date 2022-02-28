@@ -278,7 +278,7 @@ const Mint: React.VFC = () => {
         </div>
         <div className={styles.sub}>
           <div className={styles.subLeft}>
-            Cost $
+            Cost in $
             <strong>
               {usdtValue === 0
                 ? 'USDT Amount'

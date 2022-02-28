@@ -9,11 +9,11 @@ import { Table } from '../components/Table';
 import { ScrollAssistant } from '../components/ScrollAssistant';
 import { PaginationResponse, Transaction } from '../types';
 import { getNetwork } from '@ethersproject/networks';
+import { useWallet } from '../hooks/use-wallet';
+import { NotificationContext } from '../components/Notification';
 
 import styles from '../styles/Home.module.scss';
 import 'swiper/swiper.min.css';
-import { useWallet } from '../hooks/use-wallet';
-import { NotificationContext } from '../components/Notification';
 
 type HomeProps = {
   transactions: PaginationResponse<Transaction>;
