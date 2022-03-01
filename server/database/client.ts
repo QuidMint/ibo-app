@@ -17,11 +17,18 @@ class DatabaseClient {
     console.log('[Database]: Creating Indexes');
     await this.createIndexes([
       {
-        index: 'idx1:transactions',
+        index: 'idx2:transactions',
         schema: {
-          contractAddress: SchemaFieldTypes.TAG,
-          address: SchemaFieldTypes.TAG,
-          timestamp: SchemaFieldTypes.NUMERIC,
+          contractAddress: {
+            type: SchemaFieldTypes.TAG,
+          },
+          address: {
+            type: SchemaFieldTypes.TAG,
+          },
+          timestamp: {
+            type: SchemaFieldTypes.NUMERIC,
+            SORTABLE: true,
+          },
         },
       },
     ]);

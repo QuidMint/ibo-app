@@ -1,25 +1,39 @@
 import { databaseClient } from './client';
 import { PaginationResponse, Transaction } from '../../types';
 
-const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ID;
-
 type TransactionQuery = {
   limit?: number;
   offset?: number;
-  address?: string | undefined;
+  filter?: Partial<Transaction>;
 };
 
-export const findAllTransactions = async ({
-  limit = 100000, // todo: temporary
+export const search = async ({
+  limit = 50,
   offset = 0,
-  address,
+  filter = {},
 }: TransactionQuery) => {
+  const srtFilter = Object.keys(filter).reduce(
+    (result: string, key: string) => {
+      if (filter[key as keyof Transaction]) {
+        result += `@${key}:{${filter[key as keyof Transaction]}}`;
+      }
+
+      return result;
+    },
+    '',
+  );
+
   const response = await databaseClient.findAll(
-    'idx1:transactions',
-    address
-      ? `@address:{${address}}` //  @contractAddress:{${contractAddress}} SORTBY timestamp DESC
-      : `*`, // @contractAddress:{${contractAddress}} SORTBY timestamp DESC
-    { LIMIT: { from: offset, size: limit } },
+    'idx2:transactions',
+    srtFilter,
+    {
+      LIMIT: { from: offset, size: limit },
+      SORTBY: {
+        //@ts-ignore
+        BY: 'timestamp',
+        DIRECTION: 'DESC',
+      },
+    },
   );
 
   return response as PaginationResponse<Transaction>;
@@ -27,8 +41,9 @@ export const findAllTransactions = async ({
 
 export const getAccountInfo = async (
   address: string,
+  contractAddress: string,
 ): Promise<{ costInUsd: number; qdAmount: number; address: string }> => {
-  const response = await findAllTransactions({ address });
+  const response = await search({ filter: { address, contractAddress } });
 
   let costInUsd = 0;
   let qdAmount = 0;
