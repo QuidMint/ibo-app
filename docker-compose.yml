@@ -1,0 +1,35 @@
+version: "3.9"
+
+volumes:
+  redis-data:
+
+services:
+  redis:
+    image: redislabs/redismod:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+
+  ui:
+    build:
+      context: .
+      args: &environment
+        API_URL: http://localhost:3000/api
+        USDT_CONTRACT_ID: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+        CONTRACT_ID: "0x75781C26A8CA4d9cBF6268a9B05c657EF6149C5f"
+        NETWOKR: mainnet
+        INFURA_KEY: "d5fa11d013fc419badcb1ad40aec0e97"
+    environment:
+      REDIS_CONNECTION_STRING: redis://redis/0
+
+      NEXT_PUBLIC_CONTRACT_ID: "0x75781C26A8CA4d9cBF6268a9B05c657EF6149C5f"
+      NEXT_PUBLIC_INFURA_KEY: "d5fa11d013fc419badcb1ad40aec0e97"
+      NEXT_PUBLIC_USDT_CONTRACT_ID: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api
+      NEXT_PUBLIC_NETWOKR: mainnet
+
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
