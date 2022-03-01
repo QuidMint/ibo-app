@@ -33,3 +33,22 @@ services:
       - "3000:3000"
     depends_on:
       - redis
+
+  nginx:
+    image: linuxserver/swag:1.20.0
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - URL=${DNS_HOST}
+      - VALIDATION=http
+      - STAGING=false
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
+    volumes:
+      - "/home/ubuntu/docker/linuxserver/default:/config/nginx/site-confs/default"
+
