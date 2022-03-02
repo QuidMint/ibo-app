@@ -116,9 +116,11 @@ const Mint: React.VFC = () => {
 
     const costOfOneQd = await qdAmountToUsdtAmt('1');
     const balance = await usdtContract.balanceOf(selectedAccount);
+    const newValue = totalSupplyCap < balance ? totalSupplyCap : balance;
+    
 
     setMintValue(
-      `${(+formatUnits(balance, 6) / +formatUnits(costOfOneQd, 6)).toFixed()}`,
+      `${(+formatUnits(newValue, 6) / +formatUnits(costOfOneQd, 6)).toFixed()}`,
     );
 
     if (inputRef) {
