@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the backend with docker:
 
 ```
-docker-compose -f docker-compose-local.yml up
+docker-compose -p 6379:6379 -f docker-compose-local.yml up
 ```
 
 Second, run the development server:
