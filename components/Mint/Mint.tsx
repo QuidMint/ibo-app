@@ -241,15 +241,15 @@ const Mint: React.VFC = () => {
   return (
     <form className={styles.root} onSubmit={handleSubmit}>
       <div>
-        <div className={styles.availability}>
-          <span className={styles.availabilityCurrent}>
-            Minted {numberWithCommas(totalSupply)} QD
-          </span>
-          <span className={styles.availabilityDivideSign}>/</span>
-          <span className={styles.availabilityMax}>
-            {numberWithCommas(totalSupplyCap.toFixed())} QD mintable
-          </span>
-        </div>
+        {/*<div className={styles.availability}>*/}
+        {/*  <span className={styles.availabilityCurrent}>*/}
+        {/*    Minted {numberWithCommas(totalSupply)} QD*/}
+        {/*  </span>*/}
+        {/*  <span className={styles.availabilityDivideSign}>/</span>*/}
+        {/*  <span className={styles.availabilityMax}>*/}
+        {/*    {numberWithCommas(totalSupplyCap.toFixed())} QD mintable*/}
+        {/*  </span>*/}
+        {/*</div>*/}
         <div className={styles.inputContainer}>
           <input
             type="text"
@@ -285,12 +285,12 @@ const Mint: React.VFC = () => {
                 : numberWithCommas(usdtValue.toFixed())}
             </strong>
           </div>
-          <div className={styles.subRight}>
+          { mintValue ? (<div className={styles.subRight}>
             <strong>
               ${numberWithCommas((+mintValue - usdtValue).toFixed())}
             </strong>
-            Projected gains
-          </div>
+            Future profit
+          </div>) : null}
         </div>
       </div>
       <button

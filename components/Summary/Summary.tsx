@@ -24,6 +24,7 @@ const Summary: React.VFC = () => {
   const [totalDeposited, setTotalDeposited] = useState<string>('');
   const [totalMinted, setTotalMinted] = useState<string>('');
   const [price, setPrice] = useState<string>(' ');
+  const networkName = chainId && getNetwork(parseInt(chainId, 16)).name;
 
   useEffect(() => {
     contract?.SALE_LENGTH().then((data: any) => {
@@ -74,28 +75,28 @@ const Summary: React.VFC = () => {
     <div className={styles.root}>
       <div className={styles.section}>
         <div className={styles.title}>Days left</div>
-        <div className={styles.value}>{daysLeft}</div>
+        <div className={styles.valueSmall}>{daysLeft}</div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Current price</div>
         <div className={styles.value}>
-          <span className={styles.cents}>{price}</span>
+          <span className={styles.cents}>{Number(price).toFixed(0)}</span>
           Cents
         </div>
       </div>
       <div className={styles.section}>
-        <div className={styles.title}>Total Deposited</div>
+        <div className={styles.title}>USDT Deposited</div>
         <div className={styles.value}>
           ${numberWithCommas(parseFloat(totalDeposited).toFixed())}
         </div>
       </div>
       <div className={styles.section}>
-        <div className={styles.title}>Total Minted</div>
+        <div className={styles.title}>Minted QD</div>
         <div className={styles.value}>{numberWithCommas(totalMinted)}</div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Contract</div>
-        <div className={styles.value}>
+        <div className={styles.valueSmall}>
           <a
             href={`https://${
               defaultNewtork === 'mainnet' ? '' : defaultNewtork + '.'
@@ -107,12 +108,16 @@ const Summary: React.VFC = () => {
           </a>
         </div>
       </div>
-      <div className={styles.section}>
-        <div className={styles.title}>Network</div>
-        <div className={styles.value}>
-          {chainId && getNetwork(parseInt(chainId, 16)).name}
-        </div>
-      </div>
+      {
+        networkName !== 'homestead' ? (
+          <div className={styles.section}>
+            <div className={styles.title}>Network</div>
+            <div className={styles.valueSmall}>
+              {chainId && getNetwork(parseInt(chainId, 16)).name}
+            </div>
+          </div>
+        ) : null
+      }
     </div>
   );
 };
