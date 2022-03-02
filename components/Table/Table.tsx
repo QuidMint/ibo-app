@@ -4,7 +4,7 @@ import shortedHash from '../../utils/shorted-hash';
 import { Transaction } from '../../types';
 
 import styles from './Table.module.scss';
-import { formatDate, formatTime } from '../../utils/format-date';
+import { formatTime, formatDateNoYear } from '../../utils/format-date';
 import { numberWithCommas } from '../../utils/number-with-commas';
 
 export interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
@@ -30,11 +30,11 @@ const Table: React.VFC<TableProps> = ({
     >
       <thead className={styles.header}>
         <tr>
+          <th className={styles.right}>Minted QD</th>
+          <th className={styles.right}>Paid in USDT</th>
+          <th className={styles.right}>Gain</th>
           <th>Date</th>
           <th>Address</th>
-          <th className={styles.right}>QD bought</th>
-          <th className={styles.right}>USDT deposited</th>
-          <th className={styles.right}>Gain</th>
         </tr>
       </thead>
       <tbody className={styles.body}>
@@ -42,22 +42,22 @@ const Table: React.VFC<TableProps> = ({
           const row = item.value;
           return (
             <tr key={item.id}>
-              <td>
-                {formatDate(row.timestamp)}
-                <time>{formatTime(row.timestamp)}</time>
-              </td>
-              <td>{shortedHash(row.address)}</td>
               <td className={styles.right}>
-                {numberWithCommas(parseInt(row.qdAmount))}
+                {Number(row.qdAmount).toFixed(2)}
               </td>
               <td className={styles.right}>
                 {numberWithCommas(parseInt(row.costInUsd))}
               </td>
               <td className={styles.right}>
-                {numberWithCommas(
+                $ {numberWithCommas(
                   (Number(row.qdAmount) - Number(row.costInUsd)).toFixed(),
                 )}
               </td>
+              <td>
+                {formatDateNoYear(row.timestamp)}
+                <time>{formatTime(row.timestamp)}</time>
+              </td>
+              <td>{shortedHash(row.address)}</td>
             </tr>
           );
         })}

@@ -24,8 +24,15 @@
 
 .value {
   font-family: variables.$secondary-font;
-  font-size: 24px;
-  line-height: 28px;
+  font-size: 50px;
+  line-height: 54px;
+  color: #ffffff;
+}
+
+.valueSmall {
+  font-family: variables.$secondary-font;
+  font-size: 28px;
+  line-height: 32px;
   color: #ffffff;
 }
 
