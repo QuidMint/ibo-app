@@ -26,14 +26,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     const fetchData = () => {
-      getTransactions().then((response) =>
-        setTransactions({
-          ...response,
-          documents: response.documents.sort(
-            (a, b) => +b.value.timestamp - +a.value.timestamp,
-          ),
-        }),
-      );
+      getTransactions().then((response) => setTransactions(response));
 
       if (selectedAccount) {
         getAccountInfo(selectedAccount).then(setUserInfo);

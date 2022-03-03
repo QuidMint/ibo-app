@@ -17,10 +17,18 @@ class DatabaseClient {
     console.log('[Database]: Creating Indexes');
     await this.createIndexes([
       {
-        index: 'idx:transactions',
+        index: 'idx2:transactions',
         schema: {
-          address: SchemaFieldTypes.TAG,
-          timestamp: SchemaFieldTypes.NUMERIC,
+          contractAddress: {
+            type: SchemaFieldTypes.TAG,
+          },
+          address: {
+            type: SchemaFieldTypes.TAG,
+          },
+          timestamp: {
+            type: SchemaFieldTypes.NUMERIC,
+            SORTABLE: true,
+          },
         },
       },
     ]);
@@ -59,11 +67,19 @@ class DatabaseClient {
     }
   }
 
+  async set(key: string, value: string): Promise<string | null> {
+    return this.client.set(key, value);
+  }
+
+  async get(key: string): Promise<string | null> {
+    return this.client.get(key);
+  }
+
   async save<T extends {}>(key: string, value: T): Promise<number> {
     return this.client.hSet(key, value);
   }
 
-  async get<T>(key: string): Promise<T> {
+  async findOne<T>(key: string): Promise<T> {
     return this.client.hGetAll(key) as unknown as T;
   }
 

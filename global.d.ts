@@ -7,5 +7,5 @@ declare global {
 }
 
 interface Window {
-  ethereum?: Provider;
+  ethereum?: Provider & { isMetaMask?: boolean };
 }

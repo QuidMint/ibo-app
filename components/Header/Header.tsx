@@ -12,6 +12,7 @@ import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { numberWithCommas } from '../../utils/number-with-commas';
+import { useQuidContract } from '../../hooks/use-quid-contract';
 
 type HeaderProps = {
   userInfo: UserInfoResponse;
@@ -21,18 +22,41 @@ const Header: React.VFC<HeaderProps> = ({ userInfo }) => {
   const { notify } = useContext(NotificationContext);
   const { selectedAccount, connect } = useWallet();
   const usdtContract = useUsdtContract();
+  const quidContract = useQuidContract();
   const [balance, setBalance] = useState('');
 
   useEffect(() => {
-    if (selectedAccount) {
+    quidContract.on('Mint', () => {
       usdtContract?.balanceOf(selectedAccount).then((data: BigNumber) => {
         setBalance(formatUnits(data, 6));
       });
+    });
+  }, [quidContract, selectedAccount, usdtContract]);
+
+  useEffect(() => {
+    const updateBalance = () =>
+      usdtContract?.balanceOf(selectedAccount).then((data: BigNumber) => {
+        setBalance(formatUnits(data, 6));
+      });
+    if (selectedAccount) {
+      updateBalance();
     }
-  }, [usdtContract, selectedAccount]);
+
+    quidContract.on('Mint', updateBalance);
+  }, [usdtContract, selectedAccount, quidContract]);
 
   const handleWalletConnect = async () => {
     try {
+      if (!window.ethereum?.isMetaMask) {
+        notify({
+          severity: 'error',
+          message: 'Metamask is not installed!',
+          autoHideDuration: 5500,
+        });
+
+        return;
+      }
+
       await connect();
       notify({
         severity: 'success',

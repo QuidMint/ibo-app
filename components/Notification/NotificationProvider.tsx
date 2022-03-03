@@ -37,10 +37,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
   const notify = useCallback(
     (notification: NotificationInput) => {
-      console.log(
-        `[NotificationProvider]: Notify ${JSON.stringify(notification)}`,
-      );
-
       setNotifications((prevState) => [
         {
           ...notification,

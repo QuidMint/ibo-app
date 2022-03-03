@@ -16,18 +16,12 @@ import { Icon } from '../Lib/Icon';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
-import { withRetryHandling } from '../../utils/wrap-with-retry-handling';
 
 import styles from './Mint.module.scss';
+import { waitTransaction } from '../../lib/contracts';
+import _ from 'lodash';
 
-const waitTransaction = withRetryHandling(
-  async (callback: () => Promise<void>) => {
-    await callback();
-  },
-  { baseDelay: 2000, numberOfTries: 30 },
-);
-
-const DELAY = 60 * 60 * 1;
+const DELAY = 60 * 60 * 8; // some buffer for allowance
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
@@ -38,7 +32,7 @@ const Mint: React.VFC = () => {
   const { selectedAccount } = useWallet();
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
-  const [availableValue, setTotalSupply] = useState('');
+  const [totalSupply, setTotalSupply] = useState('');
   const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
 
   const qdAmountToUsdtAmt = async (
@@ -47,7 +41,9 @@ const Mint: React.VFC = () => {
   ): Promise<BigNumber> => {
     const currentTimestamp = (Date.now() / 1000 + delay).toFixed(0);
     return await quidContract?.qd_amt_to_usdt_amt(
-      qdAmount instanceof BigNumber ? qdAmount : parseUnits(qdAmount, 24),
+      qdAmount instanceof BigNumber
+        ? qdAmount
+        : parseUnits(qdAmount.split('.')[0], 24),
       currentTimestamp,
     );
   };
@@ -73,11 +69,7 @@ const Mint: React.VFC = () => {
       ]).then(([totalSupplyCap, totalSupply]) => {
         const totalSupplyCapInt = parseInt(formatUnits(totalSupplyCap, 24));
 
-        setTotalSupply(
-          (
-            totalSupplyCapInt - parseInt(formatUnits(totalSupply, 24))
-          ).toString(),
-        );
+        setTotalSupply(parseInt(formatUnits(totalSupply, 24)).toString());
         setTotalSupplyCap(totalSupplyCapInt);
       });
     };
@@ -89,7 +81,7 @@ const Mint: React.VFC = () => {
     const timerId = setInterval(updateTotalSupply, 5000);
 
     return () => clearInterval(timerId);
-  }, [quidContract]);
+  }, [quidContract, selectedAccount]);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const regex = /^\d*(\.\d*)?$|^$/;
@@ -107,16 +99,12 @@ const Mint: React.VFC = () => {
       originalValue = '0' + originalValue;
     }
 
-    if (Number(originalValue) > Number(availableValue)) {
-      originalValue = availableValue;
-    }
-
     if (regex.test(originalValue)) {
       setMintValue(originalValue);
     }
   };
 
-  const handleSetMaxValue = () => {
+  const handleSetMaxValue = async () => {
     if (!selectedAccount) {
       notify({
         message: 'Please connect your wallet',
@@ -126,9 +114,14 @@ const Mint: React.VFC = () => {
       return;
     }
 
-    if (mintValue !== availableValue) {
-      setMintValue(availableValue);
-    }
+    const costOfOneQd = await qdAmountToUsdtAmt('1');
+    const balance = await usdtContract.balanceOf(selectedAccount);
+    const newValue = totalSupplyCap < balance ? totalSupplyCap : balance;
+    
+
+    setMintValue(
+      `${(+formatUnits(newValue, 6) / +formatUnits(costOfOneQd, 6)).toFixed()}`,
+    );
 
     if (inputRef) {
       inputRef.current?.focus();
@@ -138,14 +131,6 @@ const Mint: React.VFC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!mintValue.length) {
-      notify({
-        severity: 'error',
-        message: 'Please enter amount',
-      });
-      return;
-    }
-
     if (!selectedAccount) {
       notify({
         severity: 'error',
@@ -154,9 +139,49 @@ const Mint: React.VFC = () => {
       return;
     }
 
+    if (!mintValue.length) {
+      notify({
+        severity: 'error',
+        message: 'Please enter amount',
+      });
+      return;
+    }
+
+    if (+mintValue <= 100) {
+      notify({
+        severity: 'error',
+        message: 'The amount should be more than 100',
+      });
+      return;
+    }
+
     try {
       const qdAmount = parseUnits(mintValue, 24);
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
+
+      const allowanceBigNumber: BigNumber = await usdtContract.allowance(
+        selectedAccount,
+        quidContract.address,
+      );
+
+      console.log(
+        'Start minting:',
+        '\nCurrent allowance: ',
+        formatUnits(allowanceBigNumber, 6),
+        '\nUsdt amount: ',
+        formatUnits(usdtAmount, 6),
+      );
+
+      if (parseInt(formatUnits(allowanceBigNumber, 6)) !== 0) {
+        setState('approving');
+
+        const { hash } = await usdtContract?.decreaseAllowance(
+          quidContract?.address,
+          allowanceBigNumber,
+        );
+
+        await waitTransaction(hash);
+      }
 
       setState('approving');
 
@@ -171,26 +196,29 @@ const Mint: React.VFC = () => {
         autoHideDuration: 4500,
       });
 
-      await waitTransaction(async () => {
-        const receipt = await quidContract.provider.getTransactionReceipt(hash);
-
-        if (!receipt) {
-          throw new Error(`Transaction is not complited!`);
-        }
-      });
+      await waitTransaction(hash);
 
       setState('minting');
-
-      console.log(
-        'mint: ',
-        formatUnits(qdAmount, 24),
-        formatUnits(usdtAmount, 6),
-      );
 
       notify({
         severity: 'success',
         message: 'Please check your wallet',
       });
+
+      const allowanceBeforeMinting: BigNumber = await usdtContract.allowance(
+        selectedAccount,
+        quidContract.address,
+      );
+
+      console.log(
+        'Start minting:',
+        '\nQD amount: ',
+        mintValue,
+        '\nCurrent account: ',
+        selectedAccount,
+        '\nAllowance: ',
+        formatUnits(allowanceBeforeMinting, 6),
+      );
 
       await quidContract?.mint(qdAmount, selectedAccount);
 
@@ -199,6 +227,8 @@ const Mint: React.VFC = () => {
         message: 'Your minting is pending!',
       });
     } catch (err: any) {
+      console.error(err);
+
       notify({
         severity: 'error',
         message: err.error?.message || err.message,
@@ -213,16 +243,15 @@ const Mint: React.VFC = () => {
   return (
     <form className={styles.root} onSubmit={handleSubmit}>
       <div>
-        <div className={styles.availability}>
-          <span className={styles.availabilityTitle}>Available today</span>
-          <span className={styles.availabilityCurrent}>
-            QD {numberWithCommas(availableValue)}
-          </span>
-          <span className={styles.availabilityDivideSign}>/</span>
-          <span className={styles.availabilityMax}>
-            QD {numberWithCommas(totalSupplyCap.toFixed())}
-          </span>
-        </div>
+        {/*<div className={styles.availability}>*/}
+        {/*  <span className={styles.availabilityCurrent}>*/}
+        {/*    Minted {numberWithCommas(totalSupply)} QD*/}
+        {/*  </span>*/}
+        {/*  <span className={styles.availabilityDivideSign}>/</span>*/}
+        {/*  <span className={styles.availabilityMax}>*/}
+        {/*    {numberWithCommas(totalSupplyCap.toFixed())} QD mintable*/}
+        {/*  </span>*/}
+        {/*</div>*/}
         <div className={styles.inputContainer}>
           <input
             type="text"
@@ -251,19 +280,19 @@ const Mint: React.VFC = () => {
         </div>
         <div className={styles.sub}>
           <div className={styles.subLeft}>
-            $
+            Cost in $
             <strong>
               {usdtValue === 0
                 ? 'USDT Amount'
                 : numberWithCommas(usdtValue.toFixed())}
             </strong>
           </div>
-          <div className={styles.subRight}>
+          { mintValue ? (<div className={styles.subRight}>
             <strong>
               ${numberWithCommas((+mintValue - usdtValue).toFixed())}
             </strong>
-            Projected gains
-          </div>
+            Future profit
+          </div>) : null}
         </div>
       </div>
       <button

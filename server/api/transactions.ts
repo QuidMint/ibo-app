@@ -1,16 +1,28 @@
 import { Request, Response } from 'express';
-import { findAllTransactions } from '../database/queries';
+import * as queries from '../database/queries';
+
+const quidContractAddress = process.env.NEXT_PUBLIC_CONTRACT_ID as string;
+
+type QueryParams = {
+  limit: number;
+  offset: number;
+  contractAddress: string;
+};
 
 export async function transactionsHandler(req: Request, res: Response) {
-  const { limit = 50, offset = 0 } = req.query as any as {
-    limit: number;
-    offset: number;
-  };
+  const {
+    limit = 50,
+    offset = 0,
+    contractAddress = quidContractAddress,
+  } = req.query as unknown as QueryParams;
 
   try {
-    const response = await findAllTransactions({
+    const response = await queries.search({
       limit,
       offset,
+      filter: {
+        contractAddress,
+      },
     });
 
     res.status(200).json(response);
