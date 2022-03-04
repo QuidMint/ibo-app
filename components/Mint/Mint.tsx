@@ -33,7 +33,7 @@ const Mint: React.VFC = () => {
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
   const [totalSupply, setTotalSupply] = useState('');
-  const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
+  const [state, setState] = useState<'none' | 'approving' | 'minting' | 'loading'>('none');
 
   const qdAmountToUsdtAmt = async (
     qdAmount: string | BigNumber,
@@ -102,7 +102,7 @@ const Mint: React.VFC = () => {
     }
 
     if (regex.test(originalValue)) {
-      setMintValue(originalValue);
+      setMintValue(Number(originalValue).toFixed(0));
     }
   };
 
@@ -122,7 +122,7 @@ const Mint: React.VFC = () => {
     // console.log({ costOfOneQd, balance, newValue, totalSupplyCap });c
     
     setMintValue(
-      `${newValue}`,
+      Number(newValue).toFixed(0),
     );
 
     if (inputRef) {
@@ -158,6 +158,7 @@ const Mint: React.VFC = () => {
     }
 
     try {
+      setState('loading');
       const qdAmount = parseUnits(mintValue, 24);
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 

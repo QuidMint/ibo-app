@@ -37,7 +37,7 @@ const Footer: React.VFC = () => {
   return (
     <footer className={styles.root}>
       <div className={styles.media}>
-        <audio ref={(el) => (player.current = el)} autoPlay loop>
+        <audio ref={(el) => (player.current = el)} autoPlay={false} loop>
           <source src="/sounds/song.mp4" type="audio/mp4" />
           <source src="/sounds/song.mp3" type="audio/mpeg" />
         </audio>
