@@ -21,7 +21,7 @@ const Footer: React.VFC = () => {
 
   useEffect(() => {
     const play = () => {
-      setIsPlaying(true);
+      setIsPlaying(false);
       // player.current?.play();
 
       document.removeEventListener('mousedown', play);
@@ -53,7 +53,7 @@ const Footer: React.VFC = () => {
           className={styles.youtube}
         >
           <Icon name="youtube" className={styles.youtubeIcon} />
-          Watch video
+          Ethdenver video
         </a>
       </div>
       <div className={styles.socialLinks}>

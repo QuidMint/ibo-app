@@ -109,7 +109,7 @@ const Summary: React.VFC = () => {
         </div>
       </div>
       {
-        networkName !== 'homestead' ? (
+        networkName && networkName !== 'homestead' ? (
           <div className={styles.section}>
             <div className={styles.title}>Network</div>
             <div className={styles.valueSmall}>
