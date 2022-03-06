@@ -23,7 +23,7 @@ const ScrollAssistant: React.VFC<ScrollAssistantProps> = ({
 
   return (
     <button className={cx(styles.root, className)} onClick={handleClick}>
-      {isDown && 'See more'}
+      {isDown && 'See history'}
       <Icon
         name="arrow-down"
         className={cx(styles.icon, { [styles.upwards]: !isDown })}

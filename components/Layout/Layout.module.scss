@@ -10,10 +10,11 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-  background-image: url('../../images/noise-background.jpg');
+  //background-image: url('../../images/noise-background.jpg');
   background-repeat: repeat;
   background-size: cover;
   background-position: center;
+  background-color: #001327;
 
   &:before {
     content: '';
