@@ -33,7 +33,7 @@ const Mint: React.VFC = () => {
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
   const [totalSupply, setTotalSupply] = useState('');
-  const [state, setState] = useState<'none' | 'approving' | 'minting'>('none');
+  const [state, setState] = useState<'none' | 'approving' | 'minting' | 'loading'>('none');
 
   const qdAmountToUsdtAmt = async (
     qdAmount: string | BigNumber,
@@ -47,6 +47,8 @@ const Mint: React.VFC = () => {
       currentTimestamp,
     );
   };
+  
+  // console.log({ mintValue, usdtValue, totalSupplyCap, totalSupply });
 
   useDebounce(
     mintValue,
@@ -100,7 +102,7 @@ const Mint: React.VFC = () => {
     }
 
     if (regex.test(originalValue)) {
-      setMintValue(originalValue);
+      setMintValue(Number(originalValue).toFixed(0));
     }
   };
 
@@ -114,13 +116,13 @@ const Mint: React.VFC = () => {
       return;
     }
 
-    const costOfOneQd = await qdAmountToUsdtAmt('1');
-    const balance = await usdtContract.balanceOf(selectedAccount);
-    const newValue = totalSupplyCap < balance ? totalSupplyCap : balance;
+    const costOfOneQd = Number(formatUnits(await qdAmountToUsdtAmt('1'), 6));
+    const balance = Number(formatUnits(await usdtContract.balanceOf(selectedAccount), 6));
+    const newValue = Number(totalSupplyCap) < balance ? totalSupplyCap : (balance / costOfOneQd);
+    // console.log({ costOfOneQd, balance, newValue, totalSupplyCap });c
     
-
     setMintValue(
-      `${(+formatUnits(newValue, 6) / +formatUnits(costOfOneQd, 6)).toFixed()}`,
+      Number(newValue).toFixed(0),
     );
 
     if (inputRef) {
@@ -156,6 +158,7 @@ const Mint: React.VFC = () => {
     }
 
     try {
+      setState('loading');
       const qdAmount = parseUnits(mintValue, 24);
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 
@@ -243,15 +246,15 @@ const Mint: React.VFC = () => {
   return (
     <form className={styles.root} onSubmit={handleSubmit}>
       <div>
-        {/*<div className={styles.availability}>*/}
-        {/*  <span className={styles.availabilityCurrent}>*/}
-        {/*    Minted {numberWithCommas(totalSupply)} QD*/}
-        {/*  </span>*/}
-        {/*  <span className={styles.availabilityDivideSign}>/</span>*/}
-        {/*  <span className={styles.availabilityMax}>*/}
-        {/*    {numberWithCommas(totalSupplyCap.toFixed())} QD mintable*/}
-        {/*  </span>*/}
-        {/*</div>*/}
+        <div className={styles.availability}>
+          {/*<span className={styles.availabilityCurrent}>*/}
+          {/*  Minted {numberWithCommas(totalSupply)} QD*/}
+          {/*</span>*/}
+          {/*<span className={styles.availabilityDivideSign}>/</span>*/}
+          <span className={styles.availabilityMax}>
+            {numberWithCommas(totalSupplyCap.toFixed())} QD mintable
+          </span>
+        </div>
         <div className={styles.inputContainer}>
           <input
             type="text"

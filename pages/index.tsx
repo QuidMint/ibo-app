@@ -40,7 +40,7 @@ const Home: NextPage<HomeProps> = ({ transactions }) => {
   return (
     <div className={styles.root}>
       <Head>
-        <title>QUID</title>
+        <title>QuiD</title>
         <meta name="description" content="quid" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
