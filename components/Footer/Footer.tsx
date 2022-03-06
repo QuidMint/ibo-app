@@ -53,7 +53,7 @@ const Footer: React.VFC = () => {
           className={styles.youtube}
         >
           <Icon name="youtube" className={styles.youtubeIcon} />
-          Ethdenver video
+          Ethdenver
         </a>
       </div>
       <div className={styles.socialLinks}>
