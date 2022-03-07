@@ -5,8 +5,9 @@
   min-width: 1200px;
   width: 100%;
   min-height: 100vh;
+  overflow: hidden;
   height: auto;
-  //display: flex;
+  display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
