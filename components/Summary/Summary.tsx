@@ -80,8 +80,8 @@ const Summary: React.VFC = () => {
       <div className={styles.section}>
         <div className={styles.title}>Current price</div>
         <div className={styles.value}>
-          <span className={styles.cents}>{Number(price).toFixed(0)}</span>
-          Cents
+          <span className={styles.value}>{Number(price).toFixed(0)}</span>
+          <span className={styles.cents}> Cents</span>
         </div>
       </div>
       <div className={styles.section}>

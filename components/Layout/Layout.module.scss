@@ -6,16 +6,16 @@
   width: 100%;
   min-height: 100vh;
   height: auto;
-  display: flex;
+  //display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-  //background-image: url('../../images/noise-background.jpg');
+  background-image: url('../../images/noise-background.jpg');
   background-repeat: repeat;
   background-size: cover;
   background-position: center;
   //background-color: #001327;
-  background-color: rgb(30, 30, 89);
+  //background-color: rgb(30, 30, 89);
 
   &:before {
     content: '';
