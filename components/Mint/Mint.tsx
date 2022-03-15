@@ -119,7 +119,6 @@ const Mint: React.VFC = () => {
     const costOfOneQd = Number(formatUnits(await qdAmountToUsdtAmt('1'), 6));
     const balance = Number(formatUnits(await usdtContract.balanceOf(selectedAccount), 6));
     const newValue = Number(totalSupplyCap) < balance ? totalSupplyCap : (balance / costOfOneQd);
-    // console.log({ costOfOneQd, balance, newValue, totalSupplyCap });c
     
     setMintValue(
       Number(newValue).toFixed(0),
@@ -153,6 +152,24 @@ const Mint: React.VFC = () => {
       notify({
         severity: 'error',
         message: 'The amount should be more than 100',
+      });
+      return;
+    }
+    
+    if (+mintValue > totalSupplyCap) {
+      notify({
+        severity: 'error',
+        message: 'The amount should be less than the maximum mintable QDs',
+      });
+      return;
+    }
+
+    const balance = Number(formatUnits(await usdtContract.balanceOf(selectedAccount), 6));
+    
+    if (+usdtValue > balance) {
+      notify({
+        severity: 'error',
+        message: 'Cost shouldn\'t be more than your USDT balance',
       });
       return;
     }

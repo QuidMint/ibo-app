@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 45px 0 0;
+  padding: 10px 0 0;
 }
 
 .logoContainer {
@@ -13,11 +13,11 @@
 
 .logo {
   display: block;
-  width: 100px;
-  height: 70px;
+  width: 140px;
+  height: 120px;
   background-size: contain;
   background-position: center;
-  background-image: url('/logo.svg');
+  background-image: url('/quid-logo-angel.png');
   background-repeat: no-repeat;
 }
 
