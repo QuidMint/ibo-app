@@ -64,9 +64,10 @@ const Mint: React.VFC = () => {
   );
 
   useEffect(() => {
+    const currentTimestamp = (Date.now() / 1000).toFixed(0);
     const updateTotalSupply = () => {
       Promise.all([
-        quidContract.get_total_supply_cap(),
+        quidContract.get_total_supply_cap(currentTimestamp),
         quidContract.totalSupply(),
       ]).then(([totalSupplyCap, totalSupply]) => {
         const totalSupplyCapInt = parseInt(formatUnits(totalSupplyCap, 24));

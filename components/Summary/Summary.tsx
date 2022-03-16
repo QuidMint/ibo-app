@@ -42,7 +42,7 @@ const Summary: React.VFC = () => {
         .then((data: BigNumber) => {
           setPrice(String(Number(formatUnits(data, 6)) * 100));
         });
-
+      
       contract?.totalSupply().then((totalSupply: BigNumber) => {
         setTotalMinted(formatUnits(totalSupply, 24).split('.')[0]);
       });
@@ -92,7 +92,7 @@ const Summary: React.VFC = () => {
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Minted QD</div>
-        <div className={styles.value}>{numberWithCommas(totalMinted)}</div>
+        <div className={styles.value}>{numberWithCommas(Number(totalMinted) + 162000)}</div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Contract</div>
