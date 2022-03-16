@@ -23,6 +23,7 @@ const Summary: React.VFC = () => {
   const [mintPeriodDays, setMintPeriodDays] = useState<string>('');
   const [totalDeposited, setTotalDeposited] = useState<string>('');
   const [totalMinted, setTotalMinted] = useState<string>('');
+  const [ownerDeposit, setOwnerDeposit] = useState<string>('0');
   const [price, setPrice] = useState<string>(' ');
   const networkName = chainId && getNetwork(parseInt(chainId, 16)).name;
 
@@ -51,6 +52,12 @@ const Summary: React.VFC = () => {
         ?.balanceOf(process.env.NEXT_PUBLIC_CONTRACT_ID)
         .then((data: BigNumber) => {
           setTotalDeposited(formatUnits(data, 6));
+        });
+
+      usdtContract
+        ?.balanceOf(process.env.NEXT_PUBLIC_OWNER_ID)
+        .then((data: BigNumber) => {
+          setOwnerDeposit(formatUnits(data, 6));
         });
     };
 
@@ -87,12 +94,12 @@ const Summary: React.VFC = () => {
       <div className={styles.section}>
         <div className={styles.title}>USDT Deposited</div>
         <div className={styles.value}>
-          ${numberWithCommas(parseFloat(totalDeposited).toFixed())}
+          ${numberWithCommas(parseFloat(String(Number(totalDeposited) + Number(ownerDeposit))).toFixed())}
         </div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Minted QD</div>
-        <div className={styles.value}>{numberWithCommas(Number(totalMinted) + 162000)}</div>
+        <div className={styles.value}>{numberWithCommas(Number(totalMinted))}</div>
       </div>
       <div className={styles.section}>
         <div className={styles.title}>Contract</div>
