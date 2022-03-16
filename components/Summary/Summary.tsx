@@ -31,7 +31,7 @@ const Summary: React.VFC = () => {
       setMintPeriodDays(String(data.toNumber() / SECONDS_IN_DAY));
     });
 
-    contract?.sale_start().then((data: BigNumber) => {
+    contract?.SALE_START().then((data: BigNumber) => {
       setSmartContractStartTimestamp(data.toString());
     });
 
