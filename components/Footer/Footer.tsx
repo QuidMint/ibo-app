@@ -47,13 +47,13 @@ const Footer: React.VFC = () => {
         </button>
         <div className={styles.spacer} />
         <a
-          href="https://www.youtube.com/watch?v=uHjjcv1DAIg"
+          href="https://www.youtube.com/embed/v8biN7ejuas"
           target="_blank"
           rel="noreferrer"
           className={styles.youtube}
         >
           <Icon name="youtube" className={styles.youtubeIcon} />
-          Ethdenver
+          NEAR|CON
         </a>
       </div>
       <div className={styles.socialLinks}>
