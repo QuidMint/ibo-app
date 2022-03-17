@@ -47,7 +47,7 @@ const Footer: React.VFC = () => {
         </button>
         <div className={styles.spacer} />
         <a
-          href="https://www.youtube.com/embed/v8biN7ejuas"
+          href="https://www.youtube.com/watch?v=v8biN7ejuas"
           target="_blank"
           rel="noreferrer"
           className={styles.youtube}
@@ -56,7 +56,22 @@ const Footer: React.VFC = () => {
           NEAR|CON
         </a>
       </div>
+      
       <div className={styles.socialLinks}>
+        <a
+          href="https://twitter.com/quidmint"
+          className={cx(styles.socialLink, styles.socialLink2)}
+        >
+          <Icon name="twitter" className={styles.socialIcon} />
+          <Icon name="link-hover-2" className={styles.socialIconHover} />
+        </a>
+        <a
+          href="https://medium.com/@GlobalMoney"
+          className={cx(styles.socialLink, styles.socialLink3)}
+        >
+          <Icon name="medium" className={styles.socialIcon} />
+          <Icon name="link-hover-3" className={styles.socialIconHover} />
+        </a>
         <a
           href="https://book.quid.io/"
           target="_blank"
