@@ -14,6 +14,8 @@ import linkHover2 from './link-hover-2.svg';
 import linkHover3 from './link-hover-3.svg';
 import musicWave from './music-wave.svg';
 import youtube from './youtube.svg';
+import twitter from './twitter.svg';
+import medium from './medium.svg';
 
 const icons = {
   'arrow-down': arrowDown,
@@ -30,6 +32,8 @@ const icons = {
   'link-hover-3': linkHover3,
   'music-wave': musicWave,
   youtube,
+  twitter,
+  medium,
 };
 
 export default icons;

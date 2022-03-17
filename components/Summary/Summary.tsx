@@ -6,7 +6,7 @@ import { useQuidContract } from '../../hooks/use-quid-contract';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { useWallet } from '../../hooks/use-wallet';
 import { numberWithCommas } from '../../utils/number-with-commas';
-import shortedHash from '../../utils/shorted-hash';
+import veryShortedHash from '../../utils/very-shorted-hash';
 import styles from './Summary.module.scss';
 
 const SECONDS_IN_DAY = 86400;
@@ -111,7 +111,7 @@ const Summary: React.VFC = () => {
             target="_blank"
             rel="noreferrer"
           >
-            {contractId && shortedHash(contractId)}
+            {contractId && veryShortedHash(contractId)}
           </a>
         </div>
       </div>
