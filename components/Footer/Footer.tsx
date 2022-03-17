@@ -82,7 +82,7 @@ const Footer: React.VFC = () => {
           <Icon name="link-hover-1" className={styles.socialIconHover} />
         </a>
         <a
-          href="https://github.com/QuidMint"
+          href="https://github.com/QuidMint/QDO/blob/main/README.md"
           target="_blank"
           rel="noreferrer"
           className={cx(styles.socialLink, styles.socialLink2)}

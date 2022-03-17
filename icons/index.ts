@@ -12,10 +12,10 @@ import information from './information.svg';
 import linkHover1 from './link-hover-1.svg';
 import linkHover2 from './link-hover-2.svg';
 import linkHover3 from './link-hover-3.svg';
-import musicWave from './music-wave.svg';
-import youtube from './youtube.svg';
-import twitter from './twitter.svg';
 import medium from './medium.svg';
+import musicWave from './music-wave.svg';
+import twitter from './twitter.svg';
+import youtube from './youtube.svg';
 
 const icons = {
   'arrow-down': arrowDown,
@@ -30,10 +30,10 @@ const icons = {
   'link-hover-1': linkHover1,
   'link-hover-2': linkHover2,
   'link-hover-3': linkHover3,
-  'music-wave': musicWave,
-  youtube,
-  twitter,
   medium,
+  'music-wave': musicWave,
+  twitter,
+  youtube,
 };
 
 export default icons;
