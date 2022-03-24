@@ -63,16 +63,16 @@
   background-position: center;
   background-repeat: no-repeat;
   border: none;
-  color: #ff9900;
+  color: #fff;
   padding: 41px 45px 27px;
   line-height: 20px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: variables.$primary-font;
   font-weight: 600;
   position: relative;
 
   &:hover > .walletBackground {
-    opacity: 0.4;
+    opacity: 0.7;
   }
 }
 
@@ -92,8 +92,8 @@ button.wallet {
 
 .walletBackground {
   display: block;
-  color: #ff9900;
-  opacity: 0.1;
+  color: red;
+  opacity: 0.4;
   position: absolute;
   top: 0;
   left: 0;
