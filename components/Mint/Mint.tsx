@@ -33,9 +33,7 @@ const Mint: React.VFC = () => {
   const [usdtValue, setUsdtValue] = useState(0);
   const [totalSupplyCap, setTotalSupplyCap] = useState(0);
   const [totalSupply, setTotalSupply] = useState('');
-  const [state, setState] = useState<
-    'none' | 'approving' | 'minting' | 'loading'
-  >('none');
+  const [state, setState] = useState<'none' | 'approving' | 'minting' | 'loading'>('none');
 
   const qdAmountToUsdtAmt = async (
     qdAmount: string | BigNumber,
@@ -49,7 +47,7 @@ const Mint: React.VFC = () => {
       currentTimestamp,
     );
   };
-
+  
   // console.log({ mintValue, usdtValue, totalSupplyCap, totalSupply });
 
   useDebounce(
@@ -120,13 +118,12 @@ const Mint: React.VFC = () => {
     }
 
     const costOfOneQd = Number(formatUnits(await qdAmountToUsdtAmt('1'), 6));
-    const balance = Number(
-      formatUnits(await usdtContract.balanceOf(selectedAccount), 6),
+    const balance = Number(formatUnits(await usdtContract.balanceOf(selectedAccount), 6));
+    const newValue = Number(totalSupplyCap) < balance ? totalSupplyCap : (balance / costOfOneQd);
+    
+    setMintValue(
+      Number(newValue).toFixed(0),
     );
-    const newValue =
-      Number(totalSupplyCap) < balance ? totalSupplyCap : balance / costOfOneQd;
-
-    setMintValue(Number(newValue).toFixed(0));
 
     if (inputRef) {
       inputRef.current?.focus();
@@ -159,7 +156,7 @@ const Mint: React.VFC = () => {
       });
       return;
     }
-
+    
     if (+mintValue > totalSupplyCap) {
       notify({
         severity: 'error',
@@ -168,14 +165,12 @@ const Mint: React.VFC = () => {
       return;
     }
 
-    const balance = Number(
-      formatUnits(await usdtContract.balanceOf(selectedAccount), 6),
-    );
-
+    const balance = Number(formatUnits(await usdtContract.balanceOf(selectedAccount), 6));
+    
     if (+usdtValue > balance) {
       notify({
         severity: 'error',
-        message: "Cost shouldn't be more than your USDT balance",
+        message: 'Cost shouldn\'t be more than your USDT balance',
       });
       return;
     }
@@ -275,11 +270,7 @@ const Mint: React.VFC = () => {
           {/*</span>*/}
           {/*<span className={styles.availabilityDivideSign}>/</span>*/}
           <span className={styles.availabilityMax}>
-            <span style={{ color: '#02d802' }}>
-              {numberWithCommas(totalSupplyCap.toFixed())}
-              &nbsp;
-            </span>
-            QD mintable
+            {numberWithCommas(totalSupplyCap.toFixed())} QD mintable
           </span>
         </div>
         <div className={styles.inputContainer}>
@@ -317,14 +308,12 @@ const Mint: React.VFC = () => {
                 : numberWithCommas(usdtValue.toFixed())}
             </strong>
           </div>
-          {mintValue ? (
-            <div className={styles.subRight}>
-              <strong style={{ color: '#02d802' }}>
-                ${numberWithCommas((+mintValue - usdtValue).toFixed())}
-              </strong>
-              Future profit
-            </div>
-          ) : null}
+          { mintValue ? (<div className={styles.subRight}>
+            <strong>
+              ${numberWithCommas((+mintValue - usdtValue).toFixed())}
+            </strong>
+            Future profit
+          </div>) : null}
         </div>
       </div>
       <button
