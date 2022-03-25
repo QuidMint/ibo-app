@@ -55,7 +55,7 @@
   opacity: 0.8;
   height: 112px;
   font-size: 108px;
-  color: green;
+  color: red;
   user-select: none;
 }
 
@@ -91,7 +91,7 @@
   padding: 0;
   background: none;
   border: none;
-  color: green;
+  color: red;
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -106,7 +106,7 @@
 
 .maxButtonBackground {
   display: block;
-  color: green;
+  color: red;
   position: absolute;
   pointer-events: none;
   width: 69px;
@@ -175,7 +175,7 @@
 
   &:not(:disabled):hover {
     .submitBtnL1 {
-      color: green;
+      color: red;
     }
 
     .glowEffect {
@@ -197,7 +197,7 @@
 .submitBtnL1 {
   width: 224px;
   height: 72px;
-  color: green;
+  color: red;
   position: absolute;
   pointer-events: none;
   z-index: -1;
@@ -209,7 +209,7 @@
 .submitBtnL2 {
   width: 238px;
   height: 109px;
-  color: green;
+  color: red;
   opacity: 0.4;
   position: absolute;
   pointer-events: none;
@@ -221,7 +221,7 @@
 .submitBtnL3 {
   width: 233px;
   height: 80px;
-  color: green;
+  color: red;
   opacity: 0.1;
   position: absolute;
   pointer-events: none;
@@ -244,24 +244,24 @@
 
 @keyframes glow {
   0% {
-    box-shadow: 0 0 0px 0px green;
+    box-shadow: 0 0 0px 0px red;
   }
   50% {
-    box-shadow: 0 0 50px 0px green;
+    box-shadow: 0 0 50px 0px red;
   }
   100% {
-    box-shadow: 0 0 0px 0px green;
+    box-shadow: 0 0 0px 0px red;
   }
 }
 
 @keyframes color {
   0% {
-    color: green;
+    color: red;
   }
   50% {
     color: #ffbb00;
   }
   100% {
-    color: green;
+    color: red;
   }
 }
