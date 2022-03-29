@@ -17,6 +17,7 @@ import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
 import { waitTransaction } from '../../lib/contracts';
+import { Modal } from '../../components/Modal';
 
 import styles from './Mint.module.scss';
 
@@ -25,6 +26,7 @@ const DELAY = 60 * 60 * 8; // some buffer for allowance
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const { notify } = useContext(NotificationContext);
   const quidContract = useQuidContract();
   const usdtContract = useUsdtContract();
@@ -37,6 +39,17 @@ const Mint: React.VFC = () => {
   >('none');
   const [isSameBeneficiary, setIsSameBeneficiary] = useState<boolean>(true);
   const [beneficiary, setBeneficiary] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAgreeTerms = async () => {
+    setIsModalOpen(false);
+    await localStorage.setItem('hasAgreedToTerms', 'true');
+    buttonRef?.current?.click();
+  };
 
   const qdAmountToUsdtAmt = async (
     qdAmount: string | BigNumber,
@@ -136,6 +149,12 @@ const Mint: React.VFC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    const hasAgreedToTerms = await localStorage.getItem('hasAgreedToTerms') === 'true';
+    if (!hasAgreedToTerms) {
+      setIsModalOpen(true);
+      return;
+    }
 
     if (!isSameBeneficiary && beneficiary === '') {
       notify({
@@ -337,6 +356,7 @@ const Mint: React.VFC = () => {
             ) : null}
           </div>
           <button
+            ref={buttonRef}
             type="submit"
             className={cn(styles.submit, styles[state])}
             disabled={state !== 'none' || usdtValue === 0}
@@ -382,6 +402,7 @@ const Mint: React.VFC = () => {
           </div>
         </div>
       )}
+      <Modal open={isModalOpen} handleAgree={handleAgreeTerms} handleClose={handleCloseModal} />
       
     </form>
     

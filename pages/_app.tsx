@@ -10,6 +10,7 @@ import { useWallet } from '../hooks/use-wallet';
 import { getAccountInfo, getTransactions } from '../services';
 import { useQuidContract } from '../hooks/use-quid-contract';
 
+
 import '../styles/globals.css';
 
 const App = ({ Component, pageProps }: AppProps) => {
