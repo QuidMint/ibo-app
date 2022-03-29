@@ -330,9 +330,9 @@ const Mint: React.VFC = () => {
       <button
         type="submit"
         className={cn(styles.submit, styles[state])}
-        disabled={state !== 'none'}
+        disabled={state !== 'none' || usdtValue === 0}
       >
-        {state !== 'none' ? `...${state}` : 'Mint'}
+        {state !== 'none' ? `...${state}` : 'MINT'}
         <Icon
           preserveAspectRatio="none"
           className={styles.submitBtnL1}
