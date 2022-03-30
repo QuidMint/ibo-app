@@ -11,12 +11,15 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@ethersproject/abi": "^5.5.0",
     "@ethersproject/bignumber": "^5.5.0",
     "@ethersproject/contracts": "^5.5.0",
     "@ethersproject/networks": "^5.5.2",
     "@ethersproject/providers": "^5.5.3",
     "@ethersproject/units": "^5.5.0",
+    "@mui/material": "^5.5.3",
     "classnames": "^2.3.1",
     "express": "^4.17.3",
     "lodash.debounce": "^4.0.8",

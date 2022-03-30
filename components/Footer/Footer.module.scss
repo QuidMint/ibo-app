@@ -24,12 +24,18 @@
   cursor: pointer;
   font-family: variables.$primary-font;
   padding: 0;
+  &:hover {
+    height: 0;
+    background: transparent;
+    box-shadow: 0 0 25px 8px #54b420;
+  }
 }
+
 
 .musicWave {
   width: 24px;
   height: 24px;
-  color: green;
+  color: #54b420;
   margin-right: 6px;
 }
 
@@ -44,6 +50,11 @@
 .youtube {
   display: flex;
   align-items: center;
+  &:hover {
+    height: 0;
+    background: transparent;
+    box-shadow: 0 0 25px 8px #54b420;
+  }
 }
 
 .youtubeIcon {
@@ -84,7 +95,7 @@
 }
 
 .socialIconHover {
-  color: green;
+  color: #54b420;
   position: absolute;
   pointer-events: none;
   z-index: -1;

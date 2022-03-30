@@ -16,16 +16,17 @@ import { Icon } from '../Lib/Icon';
 import { useUsdtContract } from '../../hooks/use-usdt-contract';
 import { useDebounce } from '../../hooks/use-debounce';
 import { numberWithCommas } from '../../utils/number-with-commas';
+import { waitTransaction } from '../../lib/contracts';
+import { Modal } from '../../components/Modal';
 
 import styles from './Mint.module.scss';
-import { waitTransaction } from '../../lib/contracts';
-import _ from 'lodash';
 
 const DELAY = 60 * 60 * 8; // some buffer for allowance
 
 const Mint: React.VFC = () => {
   const [mintValue, setMintValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const { notify } = useContext(NotificationContext);
   const quidContract = useQuidContract();
   const usdtContract = useUsdtContract();
@@ -36,6 +37,19 @@ const Mint: React.VFC = () => {
   const [state, setState] = useState<
     'none' | 'approving' | 'minting' | 'loading'
   >('none');
+  const [isSameBeneficiary, setIsSameBeneficiary] = useState<boolean>(true);
+  const [beneficiary, setBeneficiary] = useState<string>('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAgreeTerms = async () => {
+    setIsModalOpen(false);
+    await localStorage.setItem('hasAgreedToTerms', 'true');
+    buttonRef?.current?.click();
+  };
 
   const qdAmountToUsdtAmt = async (
     qdAmount: string | BigNumber,
@@ -135,6 +149,20 @@ const Mint: React.VFC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    const hasAgreedToTerms = await localStorage.getItem('hasAgreedToTerms') === 'true';
+    if (!hasAgreedToTerms) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    if (!isSameBeneficiary && beneficiary === '') {
+      notify({
+        severity: 'error',
+        message: 'Please select a beneficiary',
+      });
+      return;
+    }
 
     if (!selectedAccount) {
       notify({
@@ -246,7 +274,7 @@ const Mint: React.VFC = () => {
         formatUnits(allowanceBeforeMinting, 6),
       );
 
-      await quidContract?.mint(qdAmount, selectedAccount);
+      await quidContract?.mint(qdAmount, (!isSameBeneficiary && beneficiary !== '') ? beneficiary : selectedAccount);
 
       notify({
         severity: 'success',
@@ -269,88 +297,115 @@ const Mint: React.VFC = () => {
   return (
     <form className={styles.root} onSubmit={handleSubmit}>
       <div>
-        <div className={styles.availability}>
-          {/*<span className={styles.availabilityCurrent}>*/}
-          {/*  Minted {numberWithCommas(totalSupply)} QD*/}
-          {/*</span>*/}
-          {/*<span className={styles.availabilityDivideSign}>/</span>*/}
-          <span className={styles.availabilityMax}>
-            <span style={{ color: '#02d802' }}>
-              {numberWithCommas(totalSupplyCap.toFixed())}
-              &nbsp;
+        <div>
+          <div className={styles.availability}>
+            {/*<span className={styles.availabilityCurrent}>*/}
+            {/*  Minted {numberWithCommas(totalSupply)} QD*/}
+            {/*</span>*/}
+            {/*<span className={styles.availabilityDivideSign}>/</span>*/}
+            <span className={styles.availabilityMax}>
+              <span style={{ color: '#02d802' }}>
+                {numberWithCommas(totalSupplyCap.toFixed())}
+                &nbsp;
+              </span>
+              QD mintable
             </span>
-            QD mintable
-          </span>
-        </div>
-        <div className={styles.inputContainer}>
-          <input
-            type="text"
-            id="mint-input"
-            className={styles.input}
-            value={mintValue}
-            onChange={handleChangeValue}
-            placeholder="Mint amount"
-            ref={inputRef}
-          />
-          <label htmlFor="mint-input" className={styles.dollarSign}>
-            QD
-          </label>
+          </div>
+          <div className={styles.inputContainer}>
+            <input
+              type="text"
+              id="mint-input"
+              className={styles.input}
+              value={mintValue}
+              onChange={handleChangeValue}
+              placeholder="Mint amount"
+              ref={inputRef}
+            />
+            <label htmlFor="mint-input" className={styles.dollarSign}>
+              QD
+            </label>
+            <button
+              className={styles.maxButton}
+              onClick={handleSetMaxValue}
+              type="button"
+            >
+              Max
+              <Icon
+                preserveAspectRatio="none"
+                className={styles.maxButtonBackground}
+                name="btn-bg"
+              />
+            </button>
+          </div>
+          <div className={styles.sub}>
+            <div className={styles.subLeft}>
+              Cost in $
+              <strong>
+                {usdtValue === 0
+                  ? 'USDT Amount'
+                  : numberWithCommas(usdtValue.toFixed())}
+              </strong>
+            </div>
+            {mintValue ? (
+              <div className={styles.subRight}>
+                <strong style={{ color: '#02d802' }}>
+                  ${numberWithCommas((+mintValue - usdtValue).toFixed())}
+                </strong>
+                Future profit
+              </div>
+            ) : null}
+          </div>
           <button
-            className={styles.maxButton}
-            onClick={handleSetMaxValue}
-            type="button"
+            ref={buttonRef}
+            type="submit"
+            className={cn(styles.submit, styles[state])}
+            disabled={state !== 'none' || usdtValue === 0}
           >
-            Max
+            {state !== 'none' ? `...${state}` : 'MINT'}
             <Icon
               preserveAspectRatio="none"
-              className={styles.maxButtonBackground}
-              name="btn-bg"
+              className={styles.submitBtnL1}
+              name="composite-btn-l1"
             />
+            <Icon
+              preserveAspectRatio="none"
+              className={styles.submitBtnL2}
+              name="composite-btn-l2"
+            />
+            <Icon
+              preserveAspectRatio="none"
+              className={styles.submitBtnL3}
+              name="composite-btn-l3"
+            />
+            <div className={styles.glowEffect} />
           </button>
-        </div>
-        <div className={styles.sub}>
-          <div className={styles.subLeft}>
-            Cost in $
-            <strong>
-              {usdtValue === 0
-                ? 'USDT Amount'
-                : numberWithCommas(usdtValue.toFixed())}
-            </strong>
-          </div>
-          {mintValue ? (
-            <div className={styles.subRight}>
-              <strong style={{ color: '#02d802' }}>
-                ${numberWithCommas((+mintValue - usdtValue).toFixed())}
-              </strong>
-              Future profit
-            </div>
-          ) : null}
+          <label style={{ position: 'absolute', top: 165, right: -200}}>
+            <input name="isBeneficiary" className={styles.checkBox} type="checkbox" checked={isSameBeneficiary} onChange={(evt) => {
+              setIsSameBeneficiary(!isSameBeneficiary)
+            }}/>
+            <span className={styles.availabilityMax}>Same beneficiary</span>
+          </label>
         </div>
       </div>
-      <button
-        type="submit"
-        className={cn(styles.submit, styles[state])}
-        disabled={state !== 'none'}
-      >
-        {state !== 'none' ? `...${state}` : 'Mint'}
-        <Icon
-          preserveAspectRatio="none"
-          className={styles.submitBtnL1}
-          name="composite-btn-l1"
-        />
-        <Icon
-          preserveAspectRatio="none"
-          className={styles.submitBtnL2}
-          name="composite-btn-l2"
-        />
-        <Icon
-          preserveAspectRatio="none"
-          className={styles.submitBtnL3}
-          name="composite-btn-l3"
-        />
-        <div className={styles.glowEffect} />
-      </button>
+      { isSameBeneficiary ? null : (
+        <div className={styles.beneficiaryContainer}>
+          <div className={styles.inputContainer}>
+            <input
+              name="beneficiary"
+              type="text"
+              className={styles.beneficiaryInput}
+              onChange={(e) => setBeneficiary(e.target.value)}
+            />
+            <label htmlFor="mint-input" className={styles.idSign}>
+              benificiary
+            </label>
+          </div>
+        </div>
+      )}
+      <Modal open={isModalOpen} handleAgree={handleAgreeTerms} handleClose={handleCloseModal} />
+      
     </form>
+    
   );
 };
 

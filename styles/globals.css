@@ -12,6 +12,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
+  /*-moz-transform: scale(1.05);!* Firefox Property *!*/
+  /*-moz-transform-origin: 0 0;*/
+  /*-o-transform: scale(1.05);!* Opera Property *!*/
+  /*-o-transform-origin: 0 0;*/
+  /*-webkit-transform: scale(1.05);!* Safari Property *!*/
+  /*-webkit-transform-origin: 0 0;*/
+  /*transform: scale(1.05); !* Standard Property *!*/
+  /*transform-origin: 0 0;  !* Standard Property *!*/
+  /*zoom: 1.05;*/
 }
 
 *,
