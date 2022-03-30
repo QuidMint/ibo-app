@@ -215,7 +215,7 @@ const Mint: React.VFC = () => {
       const usdtAmount = await qdAmountToUsdtAmt(qdAmount, DELAY);
 
       const allowanceBigNumber: BigNumber = await usdtContract.allowance(
-        beneficiaryAccount,
+        selectedAccount,
         quidContract.address,
       );
 
@@ -261,7 +261,7 @@ const Mint: React.VFC = () => {
       });
 
       const allowanceBeforeMinting: BigNumber = await usdtContract.allowance(
-        beneficiaryAccount,
+        selectedAccount,
         quidContract.address,
       );
 
@@ -270,7 +270,7 @@ const Mint: React.VFC = () => {
         '\nQD amount: ',
         mintValue,
         '\nCurrent account: ',
-        beneficiaryAccount,
+        selectedAccount,
         '\nAllowance: ',
         formatUnits(allowanceBeforeMinting, 6),
       );
