@@ -149,6 +149,7 @@ const Mint: React.VFC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const beneficiaryAccount = (!isSameBeneficiary && beneficiary !== '') ? beneficiary : selectedAccount
     
     const hasAgreedToTerms = await localStorage.getItem('hasAgreedToTerms') === 'true';
     if (!hasAgreedToTerms) {
@@ -274,7 +275,7 @@ const Mint: React.VFC = () => {
         formatUnits(allowanceBeforeMinting, 6),
       );
 
-      await quidContract?.mint(qdAmount, (!isSameBeneficiary && beneficiary !== '') ? beneficiary : selectedAccount);
+      await quidContract?.mint(qdAmount, beneficiaryAccount);
 
       notify({
         severity: 'success',
@@ -379,11 +380,11 @@ const Mint: React.VFC = () => {
             />
             <div className={styles.glowEffect} />
           </button>
-          <label style={{ position: 'absolute', top: 165, right: -200}}>
+          <label style={{ position: 'absolute', top: 165, right: -170}}>
             <input name="isBeneficiary" className={styles.checkBox} type="checkbox" checked={isSameBeneficiary} onChange={(evt) => {
               setIsSameBeneficiary(!isSameBeneficiary)
             }}/>
-            <span className={styles.availabilityMax}>Same beneficiary</span>
+            <span className={styles.availabilityMax}>to myself</span>
           </label>
         </div>
       </div>
@@ -395,6 +396,7 @@ const Mint: React.VFC = () => {
               type="text"
               className={styles.beneficiaryInput}
               onChange={(e) => setBeneficiary(e.target.value)}
+              placeholder={selectedAccount ? String(selectedAccount) : '0x00000000219ab540356cBB839Cbe05303d7705Fa'}
             />
             <label htmlFor="mint-input" className={styles.idSign}>
               benificiary
