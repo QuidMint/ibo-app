@@ -2,6 +2,7 @@ version: "3.9"
 
 volumes:
   redis-data:
+  static-data:
 
 services:
   redis:
@@ -34,6 +35,8 @@ services:
       - "3000:3000"
     depends_on:
       - redis
+    volumes:
+      - static-data:/static-data:rw
 
   nginx:
     image: linuxserver/swag:1.20.0
@@ -52,3 +55,6 @@ services:
     restart: unless-stopped
     volumes:
       - "/home/ec2-user/qdo-app/docker/linuxserver/default:/config/nginx/site-confs/default"
+      - static-data:/static-data
+    depends_on:
+      - ui
